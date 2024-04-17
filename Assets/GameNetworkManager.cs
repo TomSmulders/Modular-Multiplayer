@@ -29,8 +29,34 @@ public class GameNetworkManager : NetworkBehaviour
         currentLobby = await SteamMatchmaking.CreateLobbyAsync(_maxPlayers);
 
         SetLobbyMode(_lobbyMode);
+        SetupLobby();
 
         UIManager.instance.ShowInLobbyScreen();
+    }
+
+    public async void RequestLobbies()
+    {
+        foreach (GameObject card in GameManager.instance.lobbyCards)
+        {
+            Destroy(card);
+        }
+
+        Lobby[] lobbies = await SteamMatchmaking.LobbyList.RequestAsync();
+
+        foreach (Lobby _lobby in lobbies)
+        {
+            if (_lobby.GetData("LobbyName").Length > 0)
+            {
+                GameManager.instance.CreateLobbyCard(_lobby, _lobby.GetData("LobbyName"));
+            }
+        }
+    }
+
+    public void SetupLobby()
+    {
+        currentLobby.Value.SetJoinable(true);
+        currentLobby.Value.SetGameServer(currentLobby.Value.Owner.Id);
+        currentLobby.Value.SetData("LobbyName", currentLobby.Value.Owner.Name + "'s lobby");
     }
 
     public void SetLobbyMode(LobbyMode _lobbymode)
