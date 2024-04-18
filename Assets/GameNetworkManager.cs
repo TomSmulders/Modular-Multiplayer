@@ -71,6 +71,9 @@ public class GameNetworkManager : NetworkBehaviour
     {
         Friend[] members = _memberIEnumerable.ToArray();
 
+        Debug.Log(members);
+        Debug.Log(players);
+
         foreach (PlayerData player in players)
         {
             if (!members.Contains(player.friend))
@@ -217,17 +220,6 @@ public class GameNetworkManager : NetworkBehaviour
         }
 
         UIManager.instance.ShowInLobbyScreen();
-    }
-
-    private void Update()
-    {
-        if(currentLobby != null)
-        {
-            foreach (Friend? member in currentLobby.Value.Members)
-            {
-                Debug.Log(member.Value.Name);
-            }
-        }
     }
 
     public void SetLobbyMode(LobbyMode _lobbymode)
