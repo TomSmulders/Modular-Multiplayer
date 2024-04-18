@@ -24,8 +24,6 @@ public class GameNetworkManager : NetworkBehaviour
 
     public async void StartHost(int _maxPlayers , LobbyMode _lobbyMode)
     {
-        Debug.Log("test");
-
         NetworkManager.Singleton.StartHost();
 
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
@@ -76,6 +74,17 @@ public class GameNetworkManager : NetworkBehaviour
         }
 
         UIManager.instance.ShowInLobbyScreen();
+    }
+
+    private void Update()
+    {
+        if(currentLobby != null)
+        {
+            foreach (Friend? member in currentLobby.Value.Members)
+            {
+                Debug.Log(member.Value.Name);
+            }
+        }
     }
 
     public void SetLobbyMode(LobbyMode _lobbymode)
