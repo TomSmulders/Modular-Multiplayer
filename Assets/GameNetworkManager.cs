@@ -33,35 +33,37 @@ public class GameNetworkManager : NetworkBehaviour
         transport = GetComponent<FacepunchTransport>();
 
         SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
-        SteamMatchmaking.OnLobbyMemberJoined += OnMemberJoined;
-        SteamMatchmaking.OnLobbyMemberLeave += OnMemberLeave;
+        SteamMatchmaking.OnLobbyMemberJoined += OnLobbyMemberJoined;
+        SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberLeave;
     }
 
     private void OnDestroy()
     {
         SteamMatchmaking.OnLobbyEntered -= OnLobbyEntered;
-        SteamMatchmaking.OnLobbyMemberJoined -= OnMemberJoined;
-        SteamMatchmaking.OnLobbyMemberLeave -= OnMemberLeave;
+        SteamMatchmaking.OnLobbyMemberJoined -= OnLobbyMemberJoined;
+        SteamMatchmaking.OnLobbyMemberLeave -= OnLobbyMemberLeave;
     }
 
     private void OnLobbyEntered(Lobby _lobby)
     {
-        if (NetworkManager.Singleton.IsHost)
-        {
-            return;
-        }
+        Debug.Log("test");
 
-        StartClient(currentLobby.Value.Owner.Id);
+        if (!NetworkManager.Singleton.IsHost)
+        {
+            StartClient(currentLobby.Value.Owner.Id);
+        }
 
         UpdatePlayers(_lobby.Members);
     }
 
-    private void OnMemberJoined(Lobby _lobby, Friend _user)
+    private void OnLobbyMemberJoined(Lobby _lobby, Friend _user)
     {
+        Debug.Log("player joined");
         AddPlayer(_user);
     }
-    private void OnMemberLeave(Lobby _lobby, Friend _user)
+    private void OnLobbyMemberLeave(Lobby _lobby, Friend _user)
     {
+        Debug.Log("player left");
         UpdatePlayers(_lobby.Members);
     }
 
