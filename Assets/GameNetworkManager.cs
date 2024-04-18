@@ -5,11 +5,14 @@ using Unity.Netcode;
 using Steamworks;
 using Steamworks.Data;
 using UnityEngine.UI;
+using Netcode.Transports.Facepunch;
 
 public class GameNetworkManager : NetworkBehaviour
 {
 
     public static GameNetworkManager instance;
+
+    private FacepunchTransport transport = null;
 
     public Lobby? currentLobby;
     public LobbyMode currentLobbyMode;
@@ -20,6 +23,40 @@ public class GameNetworkManager : NetworkBehaviour
     private void Awake()
     {
         if (instance != null) { Destroy(this); } else { instance = this; }
+    }
+
+    private void Start()
+    {
+        transport = GetComponent<FacepunchTransport>();
+
+        SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
+        SteamMatchmaking.OnLobbyMemberJoined += OnMemberJoined;
+        SteamMatchmaking.OnLobbyMemberLeave += OnMemberLeave;
+    }
+
+    private void OnDestroy()
+    {
+        SteamMatchmaking.OnLobbyEntered -= OnLobbyEntered;
+        SteamMatchmaking.OnLobbyMemberJoined -= OnMemberJoined;
+        SteamMatchmaking.OnLobbyMemberLeave -= OnMemberLeave;
+    }
+
+    private void OnLobbyEntered(Lobby _lobby)
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            return;
+        }
+        StartClient(currentLobby.Value.Owner.Id);
+    }
+
+    private void OnMemberJoined(Lobby _lobby, Friend _user)
+    {
+        Debug.Log(_user.Name + " Joined");
+    }
+    private void OnMemberLeave(Lobby _lobby, Friend _user)
+    {
+        Debug.Log(_user.Name + " left");
     }
 
     public async void StartHost(int _maxPlayers , LobbyMode _lobbyMode)
@@ -34,6 +71,50 @@ public class GameNetworkManager : NetworkBehaviour
 
         UIManager.instance.ShowInLobbyScreen();
     }
+
+    public void StartClient(SteamId _sId)
+    {
+        NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback;
+        NetworkManager.Singleton.OnClientDisconnectCallback += Singleton_OnClientDisconnectCallback;
+        transport.targetSteamId = _sId;
+        GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
+        if (NetworkManager.Singleton.StartClient())
+        {
+            Debug.Log("Client has started");
+        }
+    }
+
+    private void Singleton_OnClientDisconnectCallback(ulong _clientId)
+    {
+        NetworkManager.Singleton.OnClientDisconnectCallback -= Singleton_OnClientDisconnectCallback;
+        if (_clientId == 0)
+        {
+            Disconnected();
+        }
+    }
+
+    private void Singleton_OnClientConnectedCallback(ulong _clientId)
+    {
+        GameManager.instance.myClientID = _clientId;
+    }
+
+    public void Disconnected()
+    {
+        currentLobby?.Leave();
+        if (NetworkManager.Singleton == null)
+        {
+            return;
+        }
+        else
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= Singleton_OnClientConnectedCallback;
+        }
+
+        NetworkManager.Singleton.Shutdown(true);
+        GameManager.instance.Disconnected();
+        Debug.Log("Disconnected");
+    }
+
 
     public async void RequestLobbies()
     {
