@@ -30,6 +30,6 @@ public class LobbyData : MonoBehaviour
 
     public void JoinLobby()
     {
-        //GameNetworkManager.instance.PublicLobby_JoinRequested(lobbyId);
+        GameNetworkManager.instance.Join_Public_Lobby(lobbyId);
     }
 }

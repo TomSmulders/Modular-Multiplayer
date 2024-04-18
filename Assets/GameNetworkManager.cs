@@ -62,6 +62,22 @@ public class GameNetworkManager : NetworkBehaviour
         currentLobby.Value.SetData("LobbyName", currentLobby.Value.Owner.Name + "'s lobby");
     }
 
+    public async void Join_Public_Lobby(Lobby _lobby)
+    {
+        RoomEnter joinedLobby = await _lobby.Join();
+        if (joinedLobby != RoomEnter.Success)
+        {
+            Debug.Log("Failed to join lobby");
+        }
+        else
+        {
+            currentLobby = _lobby;
+            Debug.Log("Joined lobby");
+        }
+
+        UIManager.instance.ShowInLobbyScreen();
+    }
+
     public void SetLobbyMode(LobbyMode _lobbymode)
     {
         switch (_lobbymode)
@@ -83,6 +99,4 @@ public class GameNetworkManager : NetworkBehaviour
                 break;
         }
     }
-
-
 }
