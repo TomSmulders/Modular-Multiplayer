@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         info.ownerImage.SetActive(info.isOwner);
 
         info.kickButton.gameObject.SetActive(false);
-        if (!NetworkManager.Singleton.IsHost)
+        if (NetworkManager.Singleton.IsHost)
         {
             if(info.steamId != NetworkManager.Singleton.LocalClientId)
             {
