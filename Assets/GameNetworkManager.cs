@@ -50,12 +50,13 @@ public class GameNetworkManager : NetworkBehaviour
         {
             StartClient(currentLobby.Value.Owner.Id);
         }
+        UpdatePlayers(_lobby.Members);
     }
 
     private void OnLobbyMemberJoined(Lobby _lobby, Friend _user)
     {
         Debug.Log("player joined");
-        AddPlayer(_user);
+        UpdatePlayers(_lobby.Members);
     }
     private void OnLobbyMemberLeave(Lobby _lobby, Friend _user)
     {
@@ -99,6 +100,7 @@ public class GameNetworkManager : NetworkBehaviour
 
         player.id = _user.Value.Id;
         player.friend = _user.Value;
+        player.username = _user.Value.Name;
         player.isOwner = currentLobby.Value.IsOwnedBy(player.id);
 
         GameManager.instance.CreatePlayerCard(player);
