@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 using Steamworks;
 using Steamworks.Data;
 using UnityEngine.UI;
@@ -49,6 +50,15 @@ public class GameManager : MonoBehaviour
         info.steamId = player.id;
         info.isOwner = player.isOwner;
         info.ownerImage.SetActive(info.isOwner);
+
+        info.kickButton.gameObject.SetActive(false);
+        if (!NetworkManager.Singleton.IsHost)
+        {
+            if(info.steamId != NetworkManager.Singleton.LocalClientId)
+            {
+                info.kickButton.gameObject.SetActive(true);
+            }
+        }
 
         info.UpdateValues();
 

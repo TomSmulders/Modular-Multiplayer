@@ -707,6 +707,7 @@ MonoBehaviour:
   ownerImage: {fileID: 7618535950899596055}
   isReady: 0
   isOwner: 0
+  kickButton: {fileID: 6882476202427933086}
 --- !u!1 &8905394094756326102
 GameObject:
   m_ObjectHideFlags: 0

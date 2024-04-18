@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class PlayerInfo : MonoBehaviour
@@ -12,6 +13,7 @@ public class PlayerInfo : MonoBehaviour
     public GameObject ownerImage;
     public bool isReady;
     public bool isOwner;
+    public Button kickButton;
 
     public void UpdateValues()
     {
