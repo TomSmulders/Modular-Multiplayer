@@ -9,9 +9,11 @@ public class PlayerInfo : MonoBehaviour
     public string steamName;
     public ulong steamId;
     public GameObject readyImage;
+    public GameObject ownerImage;
     public bool isReady;
+    public bool isOwner;
 
-    private void Start()
+    public void UpdateValues()
     {
         readyImage.SetActive(false);
         playerName.text = steamName;

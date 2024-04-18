@@ -6,6 +6,7 @@ using Steamworks;
 using Steamworks.Data;
 using UnityEngine.UI;
 using Netcode.Transports.Facepunch;
+using System.Linq;
 
 public class GameNetworkManager : NetworkBehaviour
 {
@@ -18,6 +19,8 @@ public class GameNetworkManager : NetworkBehaviour
     public LobbyMode currentLobbyMode;
 
     public enum LobbyMode { Public, Private, FriendsOnly, Invisible };
+
+    public List<PlayerData> players = new List<PlayerData>();
 
 
     private void Awake()
@@ -47,16 +50,72 @@ public class GameNetworkManager : NetworkBehaviour
         {
             return;
         }
+
         StartClient(currentLobby.Value.Owner.Id);
+
+        foreach (Friend? _user in currentLobby.Value.Members)
+        {
+            bool isAlreadyAdded = false;
+            foreach(PlayerData player in players)
+            {
+                if(player.id == _user.Value.Id)
+                {
+                    isAlreadyAdded = true;
+                }
+            }
+            if (!isAlreadyAdded)
+            {
+                AddPlayer(_user);
+            }
+        }
     }
 
     private void OnMemberJoined(Lobby _lobby, Friend _user)
     {
-        Debug.Log(_user.Name + " Joined");
+        AddPlayer(_user);
     }
     private void OnMemberLeave(Lobby _lobby, Friend _user)
     {
-        Debug.Log(_user.Name + " left");
+        UpdatePlayers(_lobby.Members);
+    }
+
+    public void UpdatePlayers(IEnumerable<Friend> _memberIEnumerable)
+    {
+        Friend[] members = _memberIEnumerable.ToArray();
+
+        foreach (PlayerData player in players)
+        {
+            if (!members.Contains(player.friend))
+            {
+                RemovePlayer(player);
+            }
+        }
+    }
+
+    public void AddPlayer(Friend? _user)
+    {
+        PlayerData player = new PlayerData();
+
+        player.id = _user.Value.Id;
+        player.friend = _user.Value;
+        player.isOwner = currentLobby.Value.IsOwnedBy(player.id);
+
+        GameManager.instance.CreatePlayerCard(player);
+
+        players.Add(new PlayerData());
+    }
+
+    public void RemovePlayer(PlayerData player)
+    {
+        if (player.playercard != null)
+        {
+            Destroy(player.playercard);
+        }
+        if (player.gameobject != null)
+        {
+            Destroy(player.gameobject);
+        }
+        players.Remove(player);
     }
 
     public async void StartHost(int _maxPlayers , LobbyMode _lobbyMode)

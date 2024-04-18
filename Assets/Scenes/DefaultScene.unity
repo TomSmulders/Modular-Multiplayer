@@ -803,6 +803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentLobbyMode: 0
+  players: []
 --- !u!114 &453662183
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
     public void CreateLobbyCard(Lobby _lobbyId, string _lobbyName)
     {
         GameObject card = Instantiate(lobbyCardPrefab);
-        
         card.transform.SetParent(lobbyCardParent.transform);
 
         LobbyData data = card.GetComponent<LobbyData>();
@@ -37,6 +36,23 @@ public class GameManager : MonoBehaviour
         data.UpdateLobbyData();
 
         lobbyCards.Add(card);
+    }
+
+    public void CreatePlayerCard(PlayerData player)
+    {
+        GameObject card = Instantiate(playerCardPrefab);
+        card.transform.SetParent(playerCardPrefab.transform);
+
+        PlayerInfo info = card.GetComponent<PlayerInfo>();
+
+        info.steamName = player.username;
+        info.steamId = player.id;
+        info.isOwner = player.isOwner;
+        info.ownerImage.SetActive(info.isOwner);
+
+        info.UpdateValues();
+
+        player.playercard = card;
     }
 
     public void Disconnected()
