@@ -53,21 +53,7 @@ public class GameNetworkManager : NetworkBehaviour
 
         StartClient(currentLobby.Value.Owner.Id);
 
-        foreach (Friend? _user in currentLobby.Value.Members)
-        {
-            bool isAlreadyAdded = false;
-            foreach(PlayerData player in players)
-            {
-                if(player.id == _user.Value.Id)
-                {
-                    isAlreadyAdded = true;
-                }
-            }
-            if (!isAlreadyAdded)
-            {
-                AddPlayer(_user);
-            }
-        }
+        UpdatePlayers(_lobby.Members);
     }
 
     private void OnMemberJoined(Lobby _lobby, Friend _user)
