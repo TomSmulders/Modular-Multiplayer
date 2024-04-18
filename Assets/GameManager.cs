@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     public void CreatePlayerCard(PlayerData player)
     {
         GameObject card = Instantiate(playerCardPrefab);
-        card.transform.SetParent(playerCardPrefab.transform);
+        card.transform.SetParent(playerCardParent.transform);
 
         PlayerInfo info = card.GetComponent<PlayerInfo>();
 
