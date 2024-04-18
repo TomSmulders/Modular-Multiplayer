@@ -20,7 +20,10 @@ public class UIManager : MonoBehaviour
         {
             GameNetworkManager.instance.RequestLobbies();
         });
+    }
 
+    private void Start()
+    {
         GameNetworkManager.instance.RequestLobbies();
     }
 

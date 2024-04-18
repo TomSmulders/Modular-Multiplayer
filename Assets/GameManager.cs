@@ -22,7 +22,9 @@ public class GameManager : MonoBehaviour
 
     public void CreateLobbyCard(Lobby _lobbyId, string _lobbyName)
     {
-        GameObject card = Instantiate(lobbyCardPrefab, transform.parent = lobbyCardParent.transform);
+        GameObject card = Instantiate(lobbyCardPrefab);
+        
+        card.transform.SetParent(lobbyCardParent.transform);
 
         LobbyData data = card.GetComponent<LobbyData>();
         data.LobbyName = _lobbyName;

@@ -24,7 +24,10 @@ public class GameNetworkManager : NetworkBehaviour
 
     public async void StartHost(int _maxPlayers , LobbyMode _lobbyMode)
     {
+        Debug.Log("test");
+
         NetworkManager.Singleton.StartHost();
+
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
         currentLobby = await SteamMatchmaking.CreateLobbyAsync(_maxPlayers);
 
