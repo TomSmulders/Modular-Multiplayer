@@ -88,7 +88,7 @@ public class GameNetworkManager : NetworkBehaviour
 
         GameManager.instance.CreatePlayerCard(player);
 
-        players.Add(new PlayerData());
+        players.Add(player);
     }
 
     public void RemovePlayer(PlayerData player)
