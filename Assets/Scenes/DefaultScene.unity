@@ -820,6 +820,7 @@ MonoBehaviour:
   playerCardPrefab: {fileID: 7737551932292484845, guid: c822f3dec6ec80145a54fc80fc31d135, type: 3}
   playerCardParent: {fileID: 1223523610}
   lobbyCards: []
+  playerCards: []
   myClientID: 0
 --- !u!4 &453662184
 Transform:
@@ -2134,6 +2135,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 907403222}
+  - component: {fileID: 907403223}
   m_Layer: 0
   m_Name: PlayersUIManager
   m_TagString: Untagged
@@ -2159,6 +2161,18 @@ Transform:
   - {fileID: 1187968936}
   m_Father: {fileID: 1107305267}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &907403223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907403221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d5bdf14708dd3b4da0d596eb2019148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
