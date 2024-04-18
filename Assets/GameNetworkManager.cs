@@ -78,6 +78,21 @@ public class GameNetworkManager : NetworkBehaviour
                 RemovePlayer(player);
             }
         }
+        foreach (Friend user in members)
+        {
+            bool isInPlayers = false;
+            foreach (PlayerData player in players)
+            {
+                if (player.id == user.Id)
+                {
+                    isInPlayers = true;
+                }
+            }
+            if (!isInPlayers)
+            {
+                AddPlayer(user);
+            }
+        }
     }
 
     public void AddPlayer(Friend? _user)
