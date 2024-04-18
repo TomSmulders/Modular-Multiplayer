@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Steamworks;
 
-public class PlayerData : MonoBehaviour
+public class PlayerData
 {
     public string username;
     public ulong id;
