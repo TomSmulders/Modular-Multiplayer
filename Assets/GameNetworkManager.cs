@@ -46,14 +46,10 @@ public class GameNetworkManager : NetworkBehaviour
 
     private void OnLobbyEntered(Lobby _lobby)
     {
-        Debug.Log("test");
-
         if (!NetworkManager.Singleton.IsHost)
         {
             StartClient(currentLobby.Value.Owner.Id);
         }
-
-        UpdatePlayers(_lobby.Members);
     }
 
     private void OnLobbyMemberJoined(Lobby _lobby, Friend _user)
@@ -71,8 +67,7 @@ public class GameNetworkManager : NetworkBehaviour
     {
         Friend[] members = _memberIEnumerable.ToArray();
 
-        Debug.Log(members);
-        Debug.Log(players);
+        Debug.Log("updating players");
 
         foreach (PlayerData player in players)
         {
@@ -216,7 +211,7 @@ public class GameNetworkManager : NetworkBehaviour
         else
         {
             currentLobby = _lobby;
-            Debug.Log("Joined lobby");
+            UpdatePlayers(_lobby.Members);
         }
 
         UIManager.instance.ShowInLobbyScreen();
