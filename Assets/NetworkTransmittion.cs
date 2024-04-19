@@ -7,7 +7,6 @@ using Unity.Networking.Transport;
 public class NetworkTransmittion : NetworkBehaviour
 {
     public static NetworkTransmittion instance;
-    private NetworkObject _networkObject;
 
     private void Awake()
     {
@@ -19,11 +18,10 @@ public class NetworkTransmittion : NetworkBehaviour
         {
             Destroy(this);
         }
-        _networkObject = GetComponent<NetworkObject>();
     }
 
-    [Rpc(SendTo.Everyone)]
-    public void ChangePlayerReadyUpStateRPC(ulong _id, bool _ready)
+    [ClientRpc]
+    public void ChangePlayerReadyUpState_ClientRPC(ulong _id, bool _ready)
     {
         foreach (PlayerData player in GameNetworkManager.instance.players)
         {
