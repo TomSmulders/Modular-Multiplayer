@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] GameObject lobbySearchScreen, inLobbyScreen;
     [SerializeField] Button refreshButton;
+    [SerializeField] Button FriendsButton;
 
     
 
@@ -19,6 +20,10 @@ public class UIManager : MonoBehaviour
         refreshButton.onClick.AddListener(() =>
         {
             GameNetworkManager.instance.RequestLobbies();
+        });
+        FriendsButton.onClick.AddListener(() =>
+        {
+            GetFriends.instance.RequestFriends();
         });
     }
 
