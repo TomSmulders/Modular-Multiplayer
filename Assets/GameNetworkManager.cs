@@ -45,6 +45,14 @@ public class GameNetworkManager : NetworkBehaviour
         SteamMatchmaking.OnLobbyMemberLeave -= OnLobbyMemberLeave;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            players.Value = new List<PlayerData>();
+        }
+    }
+
     private void OnLobbyEntered(Lobby _lobby)
     {
         if (!NetworkManager.Singleton.IsHost)
