@@ -21,10 +21,11 @@ public class UIManager : MonoBehaviour
         {
             GameNetworkManager.instance.RequestLobbies();
         });
-        FriendsButton.onClick.AddListener(() =>
+/*        FriendsButton.onClick.AddListener(() =>
         {
             GetFriends.instance.RequestFriends();
-        });
+        });*/
+//Gecomment omdat ik error kreeg (null exeption)
     }
 
     private void Start()

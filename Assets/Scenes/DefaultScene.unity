@@ -1060,7 +1060,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GlobalObjectIdHash: 568707579
   InScenePlacedSourceGlobalObjectIdHash: 0
-  AlwaysReplicateAsRoot: 0
+  AlwaysReplicateAsRoot: 1
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 1
@@ -1672,6 +1672,7 @@ MonoBehaviour:
   lobbySearchScreen: {fileID: 429549333}
   inLobbyScreen: {fileID: 1107305266}
   refreshButton: {fileID: 1661458892}
+  FriendsButton: {fileID: 0}
 --- !u!1 &679134589
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using Unity.Netcode;
 using Steamworks;
 using Steamworks.Data;
@@ -38,19 +39,17 @@ public class GameManager : MonoBehaviour
         RawImage img = _user.playercard.GetComponent<PlayerInfo>().readyImage;
         img.color = _ready ? UnityEngine.Color.green : UnityEngine.Color.red;
 
+        foreach (var item in GetComponent<NetworkObject>().NetworkManager.ConnectedClientsIds)
+        {
+            Debug.Log("Client: " + item);
+        }
+        //Debug.Log(GetComponent<NetworkObject>().NetworkManager.ConnectedClientsIds);
+
+        NetworkTransmittion.instance.SendDebugText("test");
+
         if (callRPC)
         {
-            NetworkTransmittion.instance.SendDebugText("test");
             //NetworkTransmittion.instance.ChangePlayerReadyUpState_ClientRPC(_user.id,_ready);
-        }
-
-        if (_user.isReady)
-        {
-            Debug.Log(_user + " is now ready");
-        }
-        else
-        {
-            Debug.Log(_user + " is no longer ready");
         }
     }
 
