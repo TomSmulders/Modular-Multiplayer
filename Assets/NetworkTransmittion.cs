@@ -20,8 +20,8 @@ public class NetworkTransmittion : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    public void ChangePlayerReadyUpState_ClientRPC(ulong _id, bool _ready)
+    [Rpc(SendTo.Everyone)]
+    public void ChangePlayerReadyUpState_RPC(ulong _id, bool _ready)
     {
         foreach (PlayerData player in GameNetworkManager.instance.players)
         {
@@ -29,6 +29,20 @@ public class NetworkTransmittion : NetworkBehaviour
             {
                 GameManager.instance.ReadyUp(player, _ready, false);
             }
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void DebugTextRPC(string text)
+    {
+        Debug.Log($"Received text from server: {text}");
+    }
+
+    public void SendDebugText(string text)
+    {
+        if (IsClient)
+        {
+            DebugTextRPC(text);
         }
     }
 }

@@ -34,7 +34,8 @@ public class GameManager : MonoBehaviour
 
         if (callRPC)
         {
-            NetworkTransmittion.instance.ChangePlayerReadyUpState_ClientRPC(_user.id,_ready);
+            NetworkTransmittion.instance.SendDebugText("test");
+            //NetworkTransmittion.instance.ChangePlayerReadyUpState_ClientRPC(_user.id,_ready);
         }
 
         if (_user.isReady)
