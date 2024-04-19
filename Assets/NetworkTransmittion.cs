@@ -32,7 +32,7 @@ public class NetworkTransmittion : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     public void DebugTextClientRPC(string text)
     {
         Debug.Log($"Received text from server: {text}");
