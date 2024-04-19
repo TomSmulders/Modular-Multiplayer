@@ -26,6 +26,27 @@ public class GameManager : MonoBehaviour
         if (instance != null) { Destroy(this); } else { instance = this; }
     }
 
+    public void ReadyUp(PlayerData _user,bool _ready,bool callRPC)
+    {
+        _user.isReady = _ready;
+        RawImage img = _user.playercard.GetComponent<PlayerInfo>().readyImage;
+        img.color = _ready ? UnityEngine.Color.green : UnityEngine.Color.red;
+
+        if (callRPC)
+        {
+            NetworkTransmittion.instance.ChangePlayerReadyUpStateRPC(_user.id,_ready);
+        }
+
+        if (_user.isReady)
+        {
+            Debug.Log(_user + " is now ready");
+        }
+        else
+        {
+            Debug.Log(_user + " is no longer ready");
+        }
+    }
+
     public void CreateLobbyCard(Lobby _lobbyId, string _lobbyName)
     {
         GameObject card = Instantiate(lobbyCardPrefab);
@@ -54,7 +75,7 @@ public class GameManager : MonoBehaviour
         info.kickButton.gameObject.SetActive(false);
         if (NetworkManager.Singleton.IsHost)
         {
-            if (info.steamId != myClientID)
+            if (info.steamId != SteamClient.SteamId)
             {
                 info.kickButton.gameObject.SetActive(true);
             }
@@ -75,6 +96,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(card);
         }
+        UIManager.instance.ShowLobbySearchScreen();
     }
 
     public async Task<Texture2D> GetProfilePicture(ulong _SteamId)

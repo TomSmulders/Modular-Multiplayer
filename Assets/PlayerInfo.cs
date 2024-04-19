@@ -10,7 +10,7 @@ public class PlayerInfo : MonoBehaviour
     [SerializeField] private TMP_Text playerName;
     public string steamName;
     public ulong steamId;
-    public GameObject readyImage;
+    public RawImage readyImage;
     public GameObject ownerImage;
     public bool isReady;
     public bool isOwner;
@@ -19,7 +19,7 @@ public class PlayerInfo : MonoBehaviour
 
     public void UpdateValues()
     {
-        readyImage.SetActive(false);
+        readyImage.color = Color.red;
         playerName.text = steamName;
     }
 

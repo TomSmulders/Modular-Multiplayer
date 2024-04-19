@@ -22,7 +22,7 @@ public class GameNetworkManager : NetworkBehaviour
 
     public List<PlayerData> players = new List<PlayerData>();
     public PlayerData me;
-
+    
 
     private void Awake()
     {
@@ -36,7 +36,7 @@ public class GameNetworkManager : NetworkBehaviour
         SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
         SteamMatchmaking.OnLobbyMemberJoined += OnLobbyMemberJoined;
         SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberLeave;
-    }
+    } 
 
     private void OnDestroy()
     {
@@ -61,7 +61,10 @@ public class GameNetworkManager : NetworkBehaviour
     }
     private void OnLobbyMemberLeave(Lobby _lobby, Friend _user)
     {
-        Debug.Log("player left");
+        if(_user.Id.ToString() == _lobby.GetData("LobbyOwner"))
+        {
+            Disconnected();
+        }
         UpdatePlayers(_lobby.Members);
     }
 
@@ -91,6 +94,16 @@ public class GameNetworkManager : NetworkBehaviour
             if (!isInPlayers)
             {
                 AddPlayer(user);
+            }
+        }
+        if(me == null)
+        {
+            foreach (PlayerData player in players)
+            {
+                if (player.id == SteamClient.SteamId)
+                {
+                    me = player;
+                }
             }
         }
     }
@@ -128,6 +141,7 @@ public class GameNetworkManager : NetworkBehaviour
 
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
         currentLobby = await SteamMatchmaking.CreateLobbyAsync(_maxPlayers);
+        currentLobby.Value.SetData("LobbyOwner", currentLobby.Value.Owner.Id.ToString());
 
         SetLobbyMode(_lobbyMode);
         SetupLobby();
@@ -206,18 +220,21 @@ public class GameNetworkManager : NetworkBehaviour
 
     public async void Join_Public_Lobby(Lobby _lobby)
     {
-        RoomEnter joinedLobby = await _lobby.Join();
-        if (joinedLobby != RoomEnter.Success)
+        if(_lobby.Owner.Id != null && _lobby.MemberCount > 0)
         {
-            Debug.Log("Failed to join lobby");
+            RoomEnter joinedLobby = await _lobby.Join();
+            if (joinedLobby != RoomEnter.Success)
+            {
+                Debug.Log("Failed to join lobby");
+            }
+            else
+            {
+                currentLobby = _lobby;
+                UpdatePlayers(_lobby.Members);
+                UIManager.instance.ShowInLobbyScreen();
+            }
         }
-        else
-        {
-            currentLobby = _lobby;
-            UpdatePlayers(_lobby.Members);
-        }
-
-        UIManager.instance.ShowInLobbyScreen();
+        
     }
 
     public void SetLobbyMode(LobbyMode _lobbymode)
@@ -239,6 +256,25 @@ public class GameNetworkManager : NetworkBehaviour
             default:
                 currentLobby.Value.SetPublic();
                 break;
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            Debug.Log("Lobby: " + currentLobby.Value);
+            Debug.Log("Lobby Id: " + currentLobby.Value.Id);
+
+            foreach (Friend member in currentLobby.Value.Members)
+            {
+                Debug.Log("Member: " + member.Name);
+            }
+
+            Debug.Log("Owner: " + currentLobby.Value.Owner);
+            Debug.Log("OwnerId: " + currentLobby.Value.Owner.Id);
+
+            Debug.Log("ClientId: " + GameManager.instance.myClientID);
         }
     }
 }
