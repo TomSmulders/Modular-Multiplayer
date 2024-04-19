@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         info.kickButton.gameObject.SetActive(false);
         if (NetworkManager.Singleton.IsHost)
         {
-            if (info.steamId != myClientID)
+            if (info.steamId != SteamClient.SteamId)
             {
                 info.kickButton.gameObject.SetActive(true);
             }
