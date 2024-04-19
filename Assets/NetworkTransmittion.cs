@@ -20,8 +20,8 @@ public class NetworkTransmittion : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone)]
-    public void ChangePlayerReadyUpState_RPC(ulong _id, bool _ready)
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangePlayerReadyUpStateServerRPC(ulong _id, bool _ready)
     {
         foreach (PlayerData player in GameNetworkManager.instance.players)
         {
@@ -32,17 +32,17 @@ public class NetworkTransmittion : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone)]
-    public void DebugTextRPC(string text)
+    [ClientRpc]
+    public void DebugTextClientRPC(string text)
     {
         Debug.Log($"Received text from server: {text}");
     }
 
     public void SendDebugText(string text)
     {
-        if (IsClient)
+        if (IsClient || IsHost)
         {
-            DebugTextRPC(text);
+            DebugTextClientRPC(text);
         }
     }
 }

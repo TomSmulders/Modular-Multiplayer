@@ -18,12 +18,18 @@ public class GameManager : MonoBehaviour
 
     public Dictionary<ulong, GameObject> playerInfo = new Dictionary<ulong, GameObject>();
 
-
     public ulong myClientID;
 
     private void Awake()
     {
-        if (instance != null) { Destroy(this); } else { instance = this; }
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 
     public void ReadyUp(PlayerData _user,bool _ready,bool callRPC)
