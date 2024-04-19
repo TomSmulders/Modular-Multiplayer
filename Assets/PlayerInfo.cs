@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Steamworks;
 
 public class PlayerInfo : MonoBehaviour
 {
@@ -14,10 +15,12 @@ public class PlayerInfo : MonoBehaviour
     public bool isReady;
     public bool isOwner;
     public Button kickButton;
+    public RawImage profileImage;
 
     public void UpdateValues()
     {
         readyImage.SetActive(false);
         playerName.text = steamName;
     }
+
 }

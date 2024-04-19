@@ -21,6 +21,7 @@ public class GameNetworkManager : NetworkBehaviour
     public enum LobbyMode { Public, Private, FriendsOnly, Invisible };
 
     public List<PlayerData> players = new List<PlayerData>();
+    public PlayerData me;
 
 
     private void Awake()
@@ -241,3 +242,5 @@ public class GameNetworkManager : NetworkBehaviour
         }
     }
 }
+
+

@@ -477,7 +477,7 @@ GameObject:
   - component: {fileID: 7514743936378316905}
   - component: {fileID: 2598489762945463076}
   m_Layer: 5
-  m_Name: Picture
+  m_Name: ProfilePicture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -708,6 +708,7 @@ MonoBehaviour:
   isReady: 0
   isOwner: 0
   kickButton: {fileID: 6882476202427933086}
+  profileImage: {fileID: 2598489762945463076}
 --- !u!1 &8905394094756326102
 GameObject:
   m_ObjectHideFlags: 0

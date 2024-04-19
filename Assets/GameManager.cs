@@ -6,7 +6,7 @@ using Steamworks;
 using Steamworks.Data;
 using UnityEngine.UI;
 using System.Runtime.CompilerServices;
-
+using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance != null) { Destroy(this); } else { instance = this; }
+        if (instance != null) { Destroy(this); } else { instance = this; }
     }
 
     public void CreateLobbyCard(Lobby _lobbyId, string _lobbyName)
@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
         lobbyCards.Add(card);
     }
 
-    public void CreatePlayerCard(PlayerData player)
+    public async void CreatePlayerCard(PlayerData player)
     {
         GameObject card = Instantiate(playerCardPrefab);
         card.transform.SetParent(playerCardParent.transform);
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         info.kickButton.gameObject.SetActive(false);
         if (NetworkManager.Singleton.IsHost)
         {
-            if(info.steamId != myClientID)
+            if (info.steamId != myClientID)
             {
                 info.kickButton.gameObject.SetActive(true);
             }
@@ -63,6 +63,9 @@ public class GameManager : MonoBehaviour
         info.UpdateValues();
 
         player.playercard = card;
+
+        player.profilePicture = await GetProfilePicture(info.steamId);
+        info.profileImage.texture = player.profilePicture;
     }
 
     public void Disconnected()
@@ -72,5 +75,24 @@ public class GameManager : MonoBehaviour
         {
             Destroy(card);
         }
+    }
+
+    public async Task<Texture2D> GetProfilePicture(ulong _SteamId)
+    {
+        Steamworks.Data.Image? profilepic = await SteamFriends.GetLargeAvatarAsync(_SteamId);
+        var avatar = new Texture2D((int)profilepic.Value.Width, (int)profilepic.Value.Height, TextureFormat.ARGB32, false);
+        avatar.filterMode = FilterMode.Trilinear;
+
+        for (int x = 0; x < profilepic.Value.Width; x++)
+        {
+            for (int y = 0; y < profilepic.Value.Height; y++)
+            {
+                var p = profilepic.Value.GetPixel(x, y);
+                avatar.SetPixel(x, (int)profilepic.Value.Height - y, new UnityEngine.Color(p.r / 255.0f, p.g / 255.0f, p.b / 255.0f, p.a / 255.0f));
+            }
+        }
+
+        avatar.Apply();
+        return avatar;
     }
 }

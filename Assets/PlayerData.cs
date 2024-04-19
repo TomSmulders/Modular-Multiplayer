@@ -11,4 +11,5 @@ public class PlayerData
     public GameObject playercard;
     public GameObject gameobject;
     public bool isOwner;
+    public Texture2D profilePicture;
 }
