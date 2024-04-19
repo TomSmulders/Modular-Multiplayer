@@ -25,6 +25,16 @@ public class ReadyButtonScript : MonoBehaviour
     {
         isReady = !isReady;
         UpdateButton();
+
+        if (GameNetworkManager.instance.me != null)
+        {
+            GameManager.instance.ReadyUp(GameNetworkManager.instance.me, isReady, true);
+        }
+        else
+        {
+            isReady = !isReady;
+            UpdateButton();
+        }
     }
 
     void UpdateButton()

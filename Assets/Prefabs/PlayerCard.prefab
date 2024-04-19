@@ -703,7 +703,7 @@ MonoBehaviour:
   playerName: {fileID: 4919788055896129334}
   steamName: 
   steamId: 0
-  readyImage: {fileID: 3271871827179632947}
+  readyImage: {fileID: 6188549310643026905}
   ownerImage: {fileID: 7618535950899596055}
   isReady: 0
   isOwner: 0
