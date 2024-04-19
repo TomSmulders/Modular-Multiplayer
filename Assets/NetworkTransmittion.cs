@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-
 using Unity.Networking.Transport;
 
 public class NetworkTransmittion : NetworkBehaviour
@@ -23,47 +22,15 @@ public class NetworkTransmittion : NetworkBehaviour
         _networkObject = GetComponent<NetworkObject>();
     }
 
-    public void SyncPlayerData(List<PlayerData> _server_Players)
+    [Rpc(SendTo.Everyone)]
+    public void ChangePlayerReadyUpStateRPC(ulong _id, bool _ready)
     {
-        foreach (PlayerData server_player in _server_Players)
+        foreach (PlayerData player in GameNetworkManager.instance.players)
         {
-            foreach (PlayerData player in GameNetworkManager.instance.players)
+            if(player.id == _id)
             {
-                if(server_player.id == player.id)
-                {
-                    player.isReady = server_player.isReady;
-                    if (player.isReady)
-                    {
-                        Debug.Log(player.username + " is now ready");
-                    }
-                    else
-                    {
-                        Debug.Log(player.username + " is no longer ready");
-                    }
-                }
+                GameManager.instance.ReadyUp(player, _ready, false);
             }
         }
-    }
-
-    [ServerRpc]
-    public void UpdateListRPC(List<PlayerData> playerDataList)
-    {
-        foreach (var client in _networkObject.NetworkManager.ConnectedClientsList)
-        {
-            if (client.PlayerObject != null)
-            {
-                var targetNetworkBehaviour = client.PlayerObject.GetComponent<NetworkTransmittion>();
-                if (targetNetworkBehaviour != null)
-                {
-                    targetNetworkBehaviour.ReceiveUpdatedList(playerDataList);
-                }
-            }
-        }
-    }
-
-    [ClientRpc]
-    public void ReceiveUpdatedList(List<PlayerData> playerDataList)
-    {
-        SyncPlayerData(playerDataList);
     }
 }

@@ -26,14 +26,25 @@ public class GameManager : MonoBehaviour
         if (instance != null) { Destroy(this); } else { instance = this; }
     }
 
-    public void ReadyUp(PlayerData user,bool _ready)
+    public void ReadyUp(PlayerData _user,bool _ready,bool callRPC)
     {
-        user.isReady = _ready;
-        RawImage img = user.playercard.GetComponent<PlayerInfo>().readyImage;
+        _user.isReady = _ready;
+        RawImage img = _user.playercard.GetComponent<PlayerInfo>().readyImage;
         img.color = _ready ? UnityEngine.Color.green : UnityEngine.Color.red;
 
-        //Call rpc to update clients
-        //
+        if (callRPC)
+        {
+            NetworkTransmittion.instance.ChangePlayerReadyUpStateRPC(_user.id,_ready);
+        }
+
+        if (_user.isReady)
+        {
+            Debug.Log(_user + " is now ready");
+        }
+        else
+        {
+            Debug.Log(_user + " is no longer ready");
+        }
     }
 
     public void CreateLobbyCard(Lobby _lobbyId, string _lobbyName)
