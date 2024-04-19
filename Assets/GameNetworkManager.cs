@@ -20,9 +20,9 @@ public class GameNetworkManager : NetworkBehaviour
 
     public enum LobbyMode { Public, Private, FriendsOnly, Invisible };
 
-    public List<PlayerData> players = new List<PlayerData>();
+    public NetworkVariable<List<PlayerData>> players = new NetworkVariable<List<PlayerData>>();
     public PlayerData me;
-
+    
 
     private void Awake()
     {
@@ -36,7 +36,7 @@ public class GameNetworkManager : NetworkBehaviour
         SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
         SteamMatchmaking.OnLobbyMemberJoined += OnLobbyMemberJoined;
         SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberLeave;
-    }
+    } 
 
     private void OnDestroy()
     {
@@ -74,7 +74,7 @@ public class GameNetworkManager : NetworkBehaviour
 
         Debug.Log("updating players");
 
-        foreach (PlayerData player in players)
+        foreach (PlayerData player in players.Value)
         {
             if (!members.Contains(player.friend))
             {
@@ -84,7 +84,7 @@ public class GameNetworkManager : NetworkBehaviour
         foreach (Friend user in members)
         {
             bool isInPlayers = false;
-            foreach (PlayerData player in players)
+            foreach (PlayerData player in players.Value)
             {
                 if (player.id == user.Id)
                 {
@@ -94,6 +94,16 @@ public class GameNetworkManager : NetworkBehaviour
             if (!isInPlayers)
             {
                 AddPlayer(user);
+            }
+        }
+        if(me == null)
+        {
+            foreach (PlayerData player in players.Value)
+            {
+                if (player.id == SteamClient.SteamId)
+                {
+                    me = player;
+                }
             }
         }
     }
@@ -109,7 +119,7 @@ public class GameNetworkManager : NetworkBehaviour
 
         GameManager.instance.CreatePlayerCard(player);
 
-        players.Add(player);
+        players.Value.Add(player);
     }
 
     public void RemovePlayer(PlayerData player)
@@ -122,7 +132,7 @@ public class GameNetworkManager : NetworkBehaviour
         {
             Destroy(player.gameobject);
         }
-        players.Remove(player);
+        players.Value.Remove(player);
     }
 
     public async void StartHost(int _maxPlayers , LobbyMode _lobbyMode)

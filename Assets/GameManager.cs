@@ -26,6 +26,16 @@ public class GameManager : MonoBehaviour
         if (instance != null) { Destroy(this); } else { instance = this; }
     }
 
+    public void ReadyUp(PlayerData user,bool _ready)
+    {
+        user.isReady = _ready;
+        RawImage img = user.playercard.GetComponent<PlayerInfo>().readyImage;
+        img.color = _ready ? UnityEngine.Color.green : UnityEngine.Color.red;
+
+        //Call rpc to update clients
+        //
+    }
+
     public void CreateLobbyCard(Lobby _lobbyId, string _lobbyName)
     {
         GameObject card = Instantiate(lobbyCardPrefab);

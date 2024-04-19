@@ -18,4 +18,9 @@ public class NetworkTransmittion : NetworkBehaviour
             Destroy(this);
         }
     }
+
+    public void SyncPlayerData(List<PlayerData> _players)
+    {
+        GameNetworkManager.instance.players.Value = _players;
+    }
 }
