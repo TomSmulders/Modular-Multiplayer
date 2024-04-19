@@ -61,7 +61,10 @@ public class GameNetworkManager : NetworkBehaviour
     }
     private void OnLobbyMemberLeave(Lobby _lobby, Friend _user)
     {
-        Debug.Log("player left");
+        if(_user.Id.ToString() == _lobby.GetData("LobbyOwner"))
+        {
+            Disconnected();
+        }
         UpdatePlayers(_lobby.Members);
     }
 
@@ -128,6 +131,7 @@ public class GameNetworkManager : NetworkBehaviour
 
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
         currentLobby = await SteamMatchmaking.CreateLobbyAsync(_maxPlayers);
+        currentLobby.Value.SetData("LobbyOwner", currentLobby.Value.Owner.Id.ToString());
 
         SetLobbyMode(_lobbyMode);
         SetupLobby();
@@ -239,6 +243,25 @@ public class GameNetworkManager : NetworkBehaviour
             default:
                 currentLobby.Value.SetPublic();
                 break;
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            Debug.Log("Lobby: " + currentLobby.Value);
+            Debug.Log("Lobby Id: " + currentLobby.Value.Id);
+
+            foreach (Friend member in currentLobby.Value.Members)
+            {
+                Debug.Log("Member: " + member.Name);
+            }
+
+            Debug.Log("Owner: " + currentLobby.Value.Owner);
+            Debug.Log("OwnerId: " + currentLobby.Value.Owner.Id);
+
+            Debug.Log("ClientId: " + GameManager.instance.myClientID);
         }
     }
 }

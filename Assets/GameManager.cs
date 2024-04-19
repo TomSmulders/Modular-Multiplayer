@@ -75,6 +75,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(card);
         }
+        UIManager.instance.ShowLobbySearchScreen();
     }
 
     public async Task<Texture2D> GetProfilePicture(ulong _SteamId)
