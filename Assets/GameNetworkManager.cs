@@ -152,37 +152,37 @@ public class GameNetworkManager : NetworkBehaviour
     {
         Debug.Log("Trying to start client");
 
+        // Set the target Steam ID for the transport
         transport.targetSteamId = _sId.Value;
 
-        Debug.Log("Test2");
-
-
-        NetworkManager.Singleton.StartClient();
-        Debug.Log("client finished");
-
-
-        GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
-        
-        Debug.Log("Client started : " + GameManager.instance.myClientID);
-
+        // Subscribe to the client connected and disconnected callbacks
         NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += Singleton_OnClientDisconnectCallback;
 
+        // Start the client
+        NetworkManager.Singleton.StartClient();
+
+        // Log the local client ID after starting the client
+        Debug.Log("Client started. Local Client ID: " + NetworkManager.Singleton.LocalClientId);
     }
 
-    private void Singleton_OnClientDisconnectCallback(ulong _clientId)
+    private void Singleton_OnClientConnectedCallback(ulong clientId)
+    {
+        Debug.Log("Client connected. Client ID: " + clientId);
+        // Add any additional logic you want to execute when a client connects
+    }
+
+    private void Singleton_OnClientDisconnectCallback(ulong clientId)
     {
         NetworkManager.Singleton.OnClientDisconnectCallback -= Singleton_OnClientDisconnectCallback;
-        if (_clientId == 0)
+        if (clientId == 0)
         {
+            Debug.Log("disconnect");
             Disconnected();
         }
     }
 
-    private void Singleton_OnClientConnectedCallback(ulong _clientId)
-    {
-        GameManager.instance.myClientID = _clientId;
-    }
+
 
     public void Disconnected()
     {
