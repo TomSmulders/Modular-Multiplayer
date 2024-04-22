@@ -185,9 +185,12 @@ public class GameNetworkManager : NetworkBehaviour
 
 
 
-    public void Disconnected()
+    public void Disconnected()s
     {
         currentLobby?.Leave();
+
+        players.Clear();
+        
         if (NetworkManager.Singleton == null)
         {
             return;

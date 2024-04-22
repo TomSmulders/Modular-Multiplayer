@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
     public List<GameObject> lobbyCards = new List<GameObject>();
     public List<GameObject> playerCards = new List<GameObject>();
 
-    public Dictionary<ulong, GameObject> playerInfo = new Dictionary<ulong, GameObject>();
 
     public ulong myClientID;
 
@@ -96,7 +95,6 @@ public class GameManager : MonoBehaviour
 
     public void Disconnected()
     {
-        playerInfo.Clear();
         foreach (GameObject card in playerCards)
         {
             Destroy(card);
