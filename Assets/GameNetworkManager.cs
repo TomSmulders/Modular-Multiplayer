@@ -238,7 +238,6 @@ public class GameNetworkManager : NetworkBehaviour
 
     public async void Join_Public_Lobby(Lobby _lobby)
     {
-        _lobby.Refresh();
         if (_lobby.GetData("CurrentLobbyMode") == LobbyMode.Public.ToString())
         {
             if (_lobby.MemberCount > 0)
