@@ -213,7 +213,10 @@ public class GameNetworkManager : NetworkBehaviour
         {
             if (_lobby.GetData("LobbyName").Length > 0 && _lobby.GetData("GameName") == GlobalGameSettings.instance.gameName)
             {
-                GameManager.instance.CreateLobbyCard(_lobby, _lobby.GetData("LobbyName"));
+                if (_lobby.MemberCount > 0 && _lobby.Owner.Id != 0)
+                {
+                    GameManager.instance.CreateLobbyCard(_lobby, _lobby.GetData("LobbyName"));
+                }
             }
         }
     }
