@@ -59,6 +59,13 @@ public class GameNetworkManager : NetworkBehaviour
     private void OnLobbyMemberJoined(Lobby _lobby, Friend _user)
     {
         UpdatePlayers(_lobby.Members);
+        if (NetworkManager.Singleton.IsHost)
+        {
+            foreach (PlayerData player in players)
+            {
+                NetworkTransmittion.instance.PlayerChangedReadyStateServerRPC(player.id, player.isReady);
+            }
+        }
     }
     private void OnLobbyMemberLeave(Lobby _lobby, Friend _user)
     {
@@ -82,7 +89,6 @@ public class GameNetworkManager : NetworkBehaviour
             {
                 RemovePlayer(player);
             }
-            GameManager.instance.ReadyUp(player, player.isReady, false);
         }
         foreach (Friend user in members)
         {
