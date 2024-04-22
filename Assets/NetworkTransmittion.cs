@@ -21,9 +21,10 @@ public class NetworkTransmittion : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PlayersCouldBeReadyServerRPC(ulong _id, bool _ready)
+    public void PlayerChangedReadyStateServerRPC(ulong _id, bool _ready)
     {
         ChangePlayerReadyUpStateClientRPC(_id, _ready);
+        CheckIfAllPlayersAreReadyClientRPC();
     }
 
     [ClientRpc]
@@ -36,6 +37,20 @@ public class NetworkTransmittion : NetworkBehaviour
                 GameManager.instance.ReadyUp(player, _ready, false);
             }
         }
+    }
+
+    [ClientRpc]
+    public void CheckIfAllPlayersAreReadyClientRPC()
+    {
+        bool ready = true;
+        foreach (PlayerData player in GameNetworkManager.instance.players)
+        {
+            if (!player.isReady)
+            {
+                ready = false;
+            }
+        }
+        GameNetworkManager.instance.UpdatePartyReady(ready);
     }
 
     [ServerRpc(RequireOwnership = false)]

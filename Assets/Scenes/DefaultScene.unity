@@ -960,6 +960,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transport: {fileID: 1415072644}
   currentLobbyMode: 0
+  partyReady: 0
 --- !u!114 &453662183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2459,6 +2460,9 @@ MonoBehaviour:
   InvisibleColor: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 1}
   lobbyModeButton: {fileID: 1376161331}
   lobbyModeText: {fileID: 2054342937}
+  startGameButton: {fileID: 1187968937}
+  startGameColor: {r: 0.13751912, g: 1, b: 0, a: 1}
+  startGameInactiveColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

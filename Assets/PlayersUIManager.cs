@@ -25,6 +25,11 @@ public class PlayersUIManager : MonoBehaviour
     [SerializeField] Button lobbyModeButton;
     [SerializeField] TextMeshProUGUI lobbyModeText;
 
+    [SerializeField] Button startGameButton;
+    [SerializeField] Color startGameColor;
+    [SerializeField] Color startGameInactiveColor;
+
+
     public void IsHost(bool _state)
     {
         HostUI.SetActive(_state);
@@ -91,6 +96,45 @@ public class PlayersUIManager : MonoBehaviour
         lobbyModeText.text = _text;
 
         ColorBlock block = lobbyModeButton.colors;
+        block.normalColor = _color;
+        block.selectedColor = _color;
+        block.highlightedColor = _color;
+        block.pressedColor = _color;
+
+        lobbyModeButton.colors = block;
+    }
+
+    public void ExitParty()
+    {
+        GameNetworkManager.instance.Disconnected();
+    }
+
+    public void ExitPartyHOST()
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            //Add a check to actually leave
+
+            GameNetworkManager.instance.Disconnected();
+        }
+    }
+
+    public void ChangePartyReady(bool _ready)
+    {
+        Color _color;
+        if (_ready)
+        {
+            startGameButton.interactable = true;
+            _color = startGameColor;
+        }
+        else
+        {
+            startGameButton.interactable = false;
+            _color = startGameInactiveColor;
+        }
+
+        ColorBlock block = startGameButton.colors;
+
         block.normalColor = _color;
         block.selectedColor = _color;
         block.highlightedColor = _color;

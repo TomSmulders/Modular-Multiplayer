@@ -17,6 +17,7 @@ public class GameNetworkManager : NetworkBehaviour
 
     public Lobby? currentLobby;
     public LobbyMode currentLobbyMode;
+    public bool partyReady = false;
 
     public enum LobbyMode { Public, Private, FriendsOnly, Invisible };
 
@@ -45,7 +46,6 @@ public class GameNetworkManager : NetworkBehaviour
 
     private void OnLobbyEntered(Lobby _lobby)
     {
-        Debug.Log("Joined lobby");
         if (!NetworkManager.Singleton.IsHost)
         {
             StartClient(_lobby.Owner.Id);
@@ -58,7 +58,6 @@ public class GameNetworkManager : NetworkBehaviour
 
     private void OnLobbyMemberJoined(Lobby _lobby, Friend _user)
     {
-        Debug.Log("player joined");
         UpdatePlayers(_lobby.Members);
     }
     private void OnLobbyMemberLeave(Lobby _lobby, Friend _user)
@@ -72,9 +71,10 @@ public class GameNetworkManager : NetworkBehaviour
 
     public void UpdatePlayers(IEnumerable<Friend> _memberIEnumerable)
     {
+        UpdatePartyReady(partyReady);
+
         Friend[] members = _memberIEnumerable.ToArray();
 
-        Debug.Log("updating players");
 
         foreach (PlayerData player in players)
         {
@@ -159,16 +159,12 @@ public class GameNetworkManager : NetworkBehaviour
 
     public void StartClient(SteamId _sId)
     {
-        Debug.Log("Trying to start client");
-
         transport.targetSteamId = _sId.Value;
 
         NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += Singleton_OnClientDisconnectCallback;
 
         NetworkManager.Singleton.StartClient();
-
-        Debug.Log("Client started. Local Client ID: " + NetworkManager.Singleton.LocalClientId);
     }
 
     private void Singleton_OnClientConnectedCallback(ulong clientId)
@@ -287,6 +283,12 @@ public class GameNetworkManager : NetworkBehaviour
         }
         currentLobby.Value.SetData("CurrentLobbyMode", _lobbymode.ToString());
         currentLobbyMode = _lobbymode;
+    }
+
+    public void UpdatePartyReady(bool _ready)
+    {
+        partyReady = _ready;
+        PlayersUIManager.instance.ChangePartyReady(partyReady);
     }
 
     private void Update()
