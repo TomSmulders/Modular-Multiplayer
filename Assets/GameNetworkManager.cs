@@ -238,6 +238,10 @@ public class GameNetworkManager : NetworkBehaviour
 
     public async void Join_Public_Lobby(Lobby _lobby)
     {
+        _lobby.Refresh();
+
+        Debug.Log(_lobby.GetData("CurrentLobbyMode"));
+
         if (_lobby.GetData("CurrentLobbyMode") == LobbyMode.Public.ToString())
         {
             if (_lobby.MemberCount > 0)
@@ -285,18 +289,7 @@ public class GameNetworkManager : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            Debug.Log("Lobby: " + currentLobby.Value);
-            Debug.Log("Lobby Id: " + currentLobby.Value.Id);
-
-            foreach (Friend member in currentLobby.Value.Members)
-            {
-                Debug.Log("Member: " + member.Name);
-            }
-
-            Debug.Log("Owner: " + currentLobby.Value.Owner);
-            Debug.Log("OwnerId: " + currentLobby.Value.Owner.Id);
-
-            Debug.Log("ClientId: " + GameManager.instance.myClientID);
+            Debug.Log(currentLobby.Value.GetData("CurrentLobbyMode"));
         }
     }
 }
