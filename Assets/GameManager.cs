@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CreateLobbyCard(Lobby _lobbyId, string _lobbyName)
+    public void CreateLobbyCard(Lobby _lobbyId, string _lobbyName) 
     {
         GameObject card = Instantiate(lobbyCardPrefab);
         card.transform.SetParent(lobbyCardParent.transform);
