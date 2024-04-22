@@ -211,7 +211,7 @@ public class GameNetworkManager : NetworkBehaviour
 
         foreach (Lobby _lobby in lobbies)
         {
-            if (_lobby.GetData("LobbyName").Length > 0)
+            if (_lobby.GetData("LobbyName").Length > 0 && _lobby.GetData("GameName") == GlobalGameSettings.instance.gameName)
             {
                 GameManager.instance.CreateLobbyCard(_lobby, _lobby.GetData("LobbyName"));
             }
@@ -223,6 +223,7 @@ public class GameNetworkManager : NetworkBehaviour
         currentLobby.Value.SetJoinable(true);
         currentLobby.Value.SetGameServer(currentLobby.Value.Owner.Id);
         currentLobby.Value.SetData("LobbyName", currentLobby.Value.Owner.Name + "'s lobby");
+        currentLobby.Value.SetData("GameName", GlobalGameSettings.instance.gameName);
     }
 
     public async void Join_Public_Lobby(Lobby _lobby)
