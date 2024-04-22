@@ -48,7 +48,7 @@ public class GameNetworkManager : NetworkBehaviour
         Debug.Log("Joined lobby");
         if (!NetworkManager.Singleton.IsHost)
         {
-            StartClient(SteamClient.SteamId);
+            StartClient(_lobby.Owner.Id);
         }
 
         UpdatePlayers(_lobby.Members);
