@@ -47,8 +47,8 @@ public class GameNetworkManager : NetworkBehaviour
 
     private void OnLobbyEntered(Lobby _lobby)
     {
-        Debug.Log("test");
-        StartClient(currentLobby.Value.Owner.Id);
+        Debug.Log("Joined lobby");
+        StartClient(SteamClient.SteamId);
 
         UpdatePlayers(_lobby.Members);
     }
@@ -150,15 +150,15 @@ public class GameNetworkManager : NetworkBehaviour
 
     public void StartClient(SteamId _sId)
     {
+        Debug.Log("test");
         NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += Singleton_OnClientDisconnectCallback;
 
+        NetworkManager.Singleton.StartClient();
+
         transport.targetSteamId = _sId;
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
-        if (NetworkManager.Singleton.StartClient())
-        {
-            Debug.Log("Client has started");
-        }
+        Debug.Log("Client started : " + GameManager.instance.myClientID);
     }
 
     private void Singleton_OnClientDisconnectCallback(ulong _clientId)
