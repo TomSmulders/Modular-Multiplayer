@@ -47,10 +47,8 @@ public class GameNetworkManager : NetworkBehaviour
 
     private void OnLobbyEntered(Lobby _lobby)
     {
-        if (!NetworkManager.Singleton.IsHost)
-        {
-            StartClient(currentLobby.Value.Owner.Id);
-        }
+        StartClient(currentLobby.Value.Owner.Id);
+
         UpdatePlayers(_lobby.Members);
     }
 
@@ -153,6 +151,7 @@ public class GameNetworkManager : NetworkBehaviour
     {
         NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += Singleton_OnClientDisconnectCallback;
+
         transport.targetSteamId = _sId;
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
         if (NetworkManager.Singleton.StartClient())
