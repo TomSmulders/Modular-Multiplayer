@@ -140,7 +140,7 @@ public class PlayersUIManager : MonoBehaviour
         block.highlightedColor = _color;
         block.pressedColor = _color;
 
-        lobbyModeButton.colors = block;
+        startGameButton.colors = block;
     }
 
     public void StartGame()
