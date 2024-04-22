@@ -47,6 +47,6 @@ public class NetworkTransmittion : NetworkBehaviour
 
     public void SendDebugText(string text)
     {
-        IWantToDebugTextServerRPC(text);
+        DebugTextClientRPC(text);
     }
 }
