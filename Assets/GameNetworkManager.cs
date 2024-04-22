@@ -288,7 +288,10 @@ public class GameNetworkManager : NetworkBehaviour
     public void UpdatePartyReady(bool _ready)
     {
         partyReady = _ready;
-        PlayersUIManager.instance.ChangePartyReady(partyReady);
+        if(PlayersUIManager.instance != null)
+        {
+            PlayersUIManager.instance.ChangePartyReady(partyReady);
+        }
     }
 
     private void Update()

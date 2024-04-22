@@ -121,26 +121,29 @@ public class PlayersUIManager : MonoBehaviour
 
     public void ChangePartyReady(bool _ready)
     {
-        Color _color;
-        if (_ready)
+        if (NetworkManager.Singleton.IsHost)
         {
-            startGameButton.interactable = true;
-            _color = startGameColor;
+            Color _color;
+            if (_ready)
+            {
+                startGameButton.interactable = true;
+                _color = startGameColor;
+            }
+            else
+            {
+                startGameButton.interactable = false;
+                _color = startGameInactiveColor;
+            }
+
+            ColorBlock block = startGameButton.colors;
+
+            block.normalColor = _color;
+            block.selectedColor = _color;
+            block.highlightedColor = _color;
+            block.pressedColor = _color;
+
+            startGameButton.colors = block;
         }
-        else
-        {
-            startGameButton.interactable = false;
-            _color = startGameInactiveColor;
-        }
-
-        ColorBlock block = startGameButton.colors;
-
-        block.normalColor = _color;
-        block.selectedColor = _color;
-        block.highlightedColor = _color;
-        block.pressedColor = _color;
-
-        startGameButton.colors = block;
     }
 
     public void StartGame()
