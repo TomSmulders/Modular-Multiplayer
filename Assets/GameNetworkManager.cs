@@ -143,6 +143,11 @@ public class GameNetworkManager : NetworkBehaviour
 
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
 
+        if(_maxPlayers > GlobalGameSettings.instance.maxPartySize)
+        {
+            _maxPlayers = GlobalGameSettings.instance.maxPartySize;
+        }
+
         currentLobby = await SteamMatchmaking.CreateLobbyAsync(_maxPlayers);
         currentLobby.Value.SetData("LobbyOwner", currentLobby.Value.Owner.Id.ToString());
 
@@ -233,6 +238,8 @@ public class GameNetworkManager : NetworkBehaviour
 
     public async void Join_Public_Lobby(Lobby _lobby)
     {
+        _lobby.Refresh();
+        
         if(_lobby.MemberCount > 0)
         {
             RoomEnter joinedLobby = await _lobby.Join();
