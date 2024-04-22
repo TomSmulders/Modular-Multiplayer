@@ -32,17 +32,21 @@ public class NetworkTransmittion : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
+    [ServerRpc(RequireOwnership = false)]
+    public void IWantToDebugTextServerRPC(string text)
+    {
+        DebugTextClientRPC(text);
+    }
+
+    [ClientRpc]
     public void DebugTextClientRPC(string text)
     {
         Debug.Log($"Received text from server: {text}");
     }
 
+
     public void SendDebugText(string text)
     {
-        if (IsClient || IsHost)
-        {
-            DebugTextClientRPC(text);
-        }
+        IWantToDebugTextServerRPC(text);
     }
 }
