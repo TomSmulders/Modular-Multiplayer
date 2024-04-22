@@ -47,6 +47,7 @@ public class GameNetworkManager : NetworkBehaviour
 
     private void OnLobbyEntered(Lobby _lobby)
     {
+        Debug.Log("test");
         StartClient(currentLobby.Value.Owner.Id);
 
         UpdatePlayers(_lobby.Members);
