@@ -82,6 +82,7 @@ public class GameNetworkManager : NetworkBehaviour
             {
                 RemovePlayer(player);
             }
+            GameManager.instance.ReadyUp(player, player.isReady, false);
         }
         foreach (Friend user in members)
         {
