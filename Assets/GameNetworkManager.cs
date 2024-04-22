@@ -185,7 +185,7 @@ public class GameNetworkManager : NetworkBehaviour
 
 
 
-    public void Disconnected()s
+    public void Disconnected()
     {
         currentLobby?.Leave();
 
