@@ -95,11 +95,14 @@ public class GameManager : MonoBehaviour
 
     public void Disconnected()
     {
-        foreach (GameObject card in playerCards)
-        {
-            Destroy(card);
-        }
         playerCards.Clear();
+
+        int children = playerCardParent.transform.childCount;
+        for (int i = 0; i < children; ++i)
+        {
+            Destroy(playerCardPrefab.transform.GetChild(i));
+        }
+
         UIManager.instance.ShowLobbySearchScreen();
     }
 
