@@ -162,11 +162,12 @@ public class GameNetworkManager : NetworkBehaviour
 
 
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
-
+        
         Debug.Log("Client started : " + GameManager.instance.myClientID);
 
         NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += Singleton_OnClientDisconnectCallback;
+
     }
 
     private void Singleton_OnClientDisconnectCallback(ulong _clientId)
