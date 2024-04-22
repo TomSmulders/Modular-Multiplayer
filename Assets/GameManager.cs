@@ -35,15 +35,11 @@ public class GameManager : MonoBehaviour
     public void ReadyUp(PlayerData _user,bool _ready,bool callRPC)
     {
         _user.isReady = _ready;
-        RawImage img = _user.playercard.GetComponent<PlayerInfo>().readyImage;
-        img.color = _ready ? UnityEngine.Color.green : UnityEngine.Color.red;
-
-        foreach (var item in GetComponent<NetworkObject>().NetworkManager.ConnectedClientsIds)
+        if(_user.playercard != null)
         {
-            Debug.Log("Client: " + item);
+            RawImage img = _user.playercard.GetComponent<PlayerInfo>().readyImage;
+            img.color = _ready ? UnityEngine.Color.green : UnityEngine.Color.red;
         }
-
-        //NetworkTransmittion.instance.SendDebugText("test");
 
         if (callRPC)
         {
