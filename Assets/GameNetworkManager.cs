@@ -231,7 +231,7 @@ public class GameNetworkManager : NetworkBehaviour
 
     public async void Join_Public_Lobby(Lobby _lobby)
     {
-        if(_lobby.Owner.Id != null && _lobby.MemberCount > 0)
+        if(_lobby.Owner.Id != 0 && _lobby.MemberCount > 0)
         {
             RoomEnter joinedLobby = await _lobby.Join();
             if (joinedLobby != RoomEnter.Success)
