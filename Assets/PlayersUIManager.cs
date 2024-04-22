@@ -35,7 +35,7 @@ public class PlayersUIManager : MonoBehaviour
     public void NextLobbyMode()
     {
         GameNetworkManager.LobbyMode mode = GameNetworkManager.instance.currentLobbyMode;
-        Debug.Log(mode);
+        Debug.Log("1: "+mode);
 
         switch (mode)
         {
@@ -55,6 +55,8 @@ public class PlayersUIManager : MonoBehaviour
                 mode = LobbyMode.Private;
                 break;
         }
+        Debug.Log("2: "+mode);
+        GameNetworkManager.instance.currentLobbyMode = mode;
         SetLobbyMode(mode);
     }
 
@@ -66,25 +68,21 @@ public class PlayersUIManager : MonoBehaviour
             {
                 case LobbyMode.Public:
                     ChangeLobbyMode("Public", publicColor);
-                    GameNetworkManager.instance.currentLobby.Value.SetPublic();
                     break;
                 case LobbyMode.Private:
                     ChangeLobbyMode("Private", privateColor);
-                    GameNetworkManager.instance.currentLobby.Value.SetPrivate();
                     break;
                 case LobbyMode.FriendsOnly:
                     ChangeLobbyMode("Friends", FriendsOnlyColor);
-                    GameNetworkManager.instance.currentLobby.Value.SetFriendsOnly();
                     break;
                 case LobbyMode.Invisible:
                     ChangeLobbyMode("Invisible", InvisibleColor);
-                    GameNetworkManager.instance.currentLobby.Value.SetInvisible();
                     break;
                 default:
                     ChangeLobbyMode("Public", publicColor);
-                    GameNetworkManager.instance.currentLobby.Value.SetPublic();
                     break;
             }
+            GameNetworkManager.instance.SetLobbyMode(_lobbyMode);
         }
     }
 
