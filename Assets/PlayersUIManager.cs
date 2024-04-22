@@ -35,6 +35,8 @@ public class PlayersUIManager : MonoBehaviour
     public void NextLobbyMode()
     {
         GameNetworkManager.LobbyMode mode = GameNetworkManager.instance.currentLobbyMode;
+        Debug.Log(mode);
+
         switch (mode)
         {
             case LobbyMode.Public:

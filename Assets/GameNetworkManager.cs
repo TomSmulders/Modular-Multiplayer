@@ -274,9 +274,10 @@ public class GameNetworkManager : NetworkBehaviour
                 currentLobby.Value.SetInvisible();
                 break;
             default:
-                currentLobby.Value.SetPublic();
+                currentLobby.Value.SetPrivate();
                 break;
         }
+        currentLobbyMode = _lobbymode;
     }
 
     private void Update()
