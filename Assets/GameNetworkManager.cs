@@ -238,24 +238,28 @@ public class GameNetworkManager : NetworkBehaviour
 
     public async void Join_Public_Lobby(Lobby _lobby)
     {
-        _lobby.Refresh();
+        Lobby[] lobbies = await SteamMatchmaking.LobbyList.RequestAsync();
 
-        Debug.Log(_lobby.GetData("CurrentLobbyMode"));
-
-        if (_lobby.GetData("CurrentLobbyMode") == LobbyMode.Public.ToString())
+        foreach (Lobby _updatedLobby in lobbies)
         {
-            if (_lobby.MemberCount > 0)
+            if (_lobby.Id == _updatedLobby.Id)
             {
-                RoomEnter joinedLobby = await _lobby.Join();
-                if (joinedLobby != RoomEnter.Success)
+                if(_lobby.GetData("CurrentLobbyMode") == LobbyMode.Public.ToString())
                 {
-                    Debug.Log("Failed to join lobby");
-                }
-                else
-                {
-                    currentLobby = _lobby;
-                    UpdatePlayers(_lobby.Members);
-                    UIManager.instance.ShowInLobbyScreen();
+                    if (_lobby.MemberCount > 0)
+                    {
+                        RoomEnter joinedLobby = await _lobby.Join();
+                        if (joinedLobby != RoomEnter.Success)
+                        {
+                            Debug.Log("Failed to join lobby");
+                        }
+                        else
+                        {
+                            currentLobby = _lobby;
+                            UpdatePlayers(_lobby.Members);
+                            UIManager.instance.ShowInLobbyScreen();
+                        }
+                    }
                 }
             }
         }
