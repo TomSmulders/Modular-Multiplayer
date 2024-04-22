@@ -43,13 +43,12 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Client: " + item);
         }
-        //Debug.Log(GetComponent<NetworkObject>().NetworkManager.ConnectedClientsIds);
 
-        NetworkTransmittion.instance.SendDebugText("test");
+        //NetworkTransmittion.instance.SendDebugText("test");
 
         if (callRPC)
         {
-            //NetworkTransmittion.instance.ChangePlayerReadyUpState_ClientRPC(_user.id,_ready);
+            NetworkTransmittion.instance.PlayersCouldBeReadyServerRPC(_user.id,_ready);
         }
     }
 

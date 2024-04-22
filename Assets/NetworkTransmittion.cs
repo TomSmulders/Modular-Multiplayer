@@ -21,11 +21,17 @@ public class NetworkTransmittion : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ChangePlayerReadyUpStateServerRPC(ulong _id, bool _ready)
+    public void PlayersCouldBeReadyServerRPC(ulong _id, bool _ready)
+    {
+        ChangePlayerReadyUpStateClientRPC(_id, _ready);
+    }
+
+    [ClientRpc]
+    public void ChangePlayerReadyUpStateClientRPC(ulong _id, bool _ready)
     {
         foreach (PlayerData player in GameNetworkManager.instance.players)
         {
-            if(player.id == _id)
+            if (player.id == _id)
             {
                 GameManager.instance.ReadyUp(player, _ready, false);
             }
@@ -36,7 +42,7 @@ public class NetworkTransmittion : NetworkBehaviour
     public void IWantToDebugTextServerRPC(string text)
     {
         DebugTextClientRPC(text);
-    }
+    } 
 
     [ClientRpc]
     public void DebugTextClientRPC(string text)
@@ -47,6 +53,6 @@ public class NetworkTransmittion : NetworkBehaviour
 
     public void SendDebugText(string text)
     {
-        DebugTextClientRPC(text);
+        IWantToDebugTextServerRPC(text);
     }
 }
