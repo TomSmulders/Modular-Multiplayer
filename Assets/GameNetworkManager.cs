@@ -193,8 +193,6 @@ public class GameNetworkManager : NetworkBehaviour
     public void Disconnected()
     {
         currentLobby?.Leave();
-
-        players.Clear();
         
         if (NetworkManager.Singleton == null)
         {
@@ -207,6 +205,8 @@ public class GameNetworkManager : NetworkBehaviour
 
         NetworkManager.Singleton.Shutdown(true);
         GameManager.instance.Disconnected();
+
+        players.Clear();
         Debug.Log("Disconnected");
     }
 
