@@ -46,7 +46,10 @@ public class GameNetworkManager : NetworkBehaviour
     private void OnLobbyEntered(Lobby _lobby)
     {
         Debug.Log("Joined lobby");
-        StartClient(SteamClient.SteamId);
+        if (!NetworkManager.Singleton.IsHost)
+        {
+            StartClient(SteamClient.SteamId);
+        }
 
         UpdatePlayers(_lobby.Members);
     }
@@ -137,6 +140,7 @@ public class GameNetworkManager : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
 
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
+
         currentLobby = await SteamMatchmaking.CreateLobbyAsync(_maxPlayers);
         currentLobby.Value.SetData("LobbyOwner", currentLobby.Value.Owner.Id.ToString());
 
@@ -150,17 +154,13 @@ public class GameNetworkManager : NetworkBehaviour
     {
         Debug.Log("Trying to start client");
 
-        // Set the target Steam ID for the transport
         transport.targetSteamId = _sId.Value;
 
-        // Subscribe to the client connected and disconnected callbacks
         NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += Singleton_OnClientDisconnectCallback;
 
-        // Start the client
         NetworkManager.Singleton.StartClient();
 
-        // Log the local client ID after starting the client
         Debug.Log("Client started. Local Client ID: " + NetworkManager.Singleton.LocalClientId);
     }
 
