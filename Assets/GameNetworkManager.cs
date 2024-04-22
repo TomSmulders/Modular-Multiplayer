@@ -156,8 +156,9 @@ public class GameNetworkManager : NetworkBehaviour
 
         NetworkManager.Singleton.StartClient();
 
-        transport.targetSteamId = _sId;
+        transport.targetSteamId = _sId.Value;
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
+
         Debug.Log("Client started : " + GameManager.instance.myClientID);
     }
 
