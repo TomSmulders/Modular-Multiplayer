@@ -150,13 +150,16 @@ public class GameNetworkManager : NetworkBehaviour
 
     public void StartClient(SteamId _sId)
     {
-        Debug.Log("test");
+        Debug.Log("Trying to start client");
         NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += Singleton_OnClientDisconnectCallback;
 
-        NetworkManager.Singleton.StartClient();
-
         transport.targetSteamId = _sId.Value;
+
+        NetworkManager.Singleton.StartClient();
+        Debug.Log("client finished");
+
+
         GameManager.instance.myClientID = NetworkManager.Singleton.LocalClientId;
 
         Debug.Log("Client started : " + GameManager.instance.myClientID);
