@@ -13,7 +13,7 @@ public class GameNetworkManager : NetworkBehaviour
 
     public static GameNetworkManager instance;
 
-    private FacepunchTransport transport = null;
+    public FacepunchTransport transport;
 
     public Lobby? currentLobby;
     public LobbyMode currentLobbyMode;
@@ -31,8 +31,6 @@ public class GameNetworkManager : NetworkBehaviour
 
     private void Start()
     {
-        transport = GetComponent<FacepunchTransport>();
-
         SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
         SteamMatchmaking.OnLobbyMemberJoined += OnLobbyMemberJoined;
         SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberLeave;
