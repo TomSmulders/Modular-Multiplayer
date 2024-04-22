@@ -204,9 +204,15 @@ public class GameNetworkManager : NetworkBehaviour
         }
 
         NetworkManager.Singleton.Shutdown(true);
-        GameManager.instance.Disconnected();
 
+        foreach (PlayerData player in players)
+        {
+            Destroy(player.playercard);
+        }
         players.Clear();
+
+        GameManager.instance.Disconnected();
+        
         Debug.Log("Disconnected");
     }
 

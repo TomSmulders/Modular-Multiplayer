@@ -97,12 +97,6 @@ public class GameManager : MonoBehaviour
     {
         playerCards.Clear();
 
-        int children = playerCardParent.transform.childCount;
-        for (int i = 0; i < children; ++i)
-        {
-            Destroy(playerCardPrefab.transform.GetChild(i));
-        }
-
         UIManager.instance.ShowLobbySearchScreen();
     }
 
