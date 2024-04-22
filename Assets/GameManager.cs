@@ -99,6 +99,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(card);
         }
+        playerCards.Clear();
         UIManager.instance.ShowLobbySearchScreen();
     }
 
