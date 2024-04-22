@@ -11,5 +11,12 @@ public class PlayersUIManager : MonoBehaviour
         if (instance != null) { Destroy(this); } else { instance = this; }
     }
 
+    public GameObject HostUI;
+    public GameObject ClientUI;
 
+    public void IsHost(bool _state)
+    {
+        HostUI.SetActive(_state);
+        ClientUI.SetActive(!_state);
+    }
 }

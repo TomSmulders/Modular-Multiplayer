@@ -51,6 +51,8 @@ public class GameNetworkManager : NetworkBehaviour
             StartClient(_lobby.Owner.Id);
         }
 
+        PlayersUIManager.instance.IsHost(NetworkManager.Singleton.IsHost);
+
         UpdatePlayers(_lobby.Members);
     }
 
