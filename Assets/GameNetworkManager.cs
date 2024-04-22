@@ -213,7 +213,7 @@ public class GameNetworkManager : NetworkBehaviour
         {
             if (_lobby.GetData("LobbyName").Length > 0 && _lobby.GetData("GameName") == GlobalGameSettings.instance.gameName)
             {
-                if (_lobby.MemberCount > 0 && _lobby.Owner.Id != 0)
+                if (_lobby.MemberCount > 0)
                 {
                     GameManager.instance.CreateLobbyCard(_lobby, _lobby.GetData("LobbyName"));
                 }
@@ -231,7 +231,7 @@ public class GameNetworkManager : NetworkBehaviour
 
     public async void Join_Public_Lobby(Lobby _lobby)
     {
-        if(_lobby.Owner.Id != 0 && _lobby.MemberCount > 0)
+        if(_lobby.MemberCount > 0)
         {
             RoomEnter joinedLobby = await _lobby.Join();
             if (joinedLobby != RoomEnter.Success)
