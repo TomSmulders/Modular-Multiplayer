@@ -259,7 +259,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7030592154776089420}
         m_TargetAssemblyTypeName: LobbyData, Assembly-CSharp
-        m_MethodName: JoinLobby
+        m_MethodName: Join_Lobby
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
