@@ -9,6 +9,7 @@ using Unity.Networking.Transport;
 
 public class PlayerData 
 {
+    //Data
     public string username;
     public ulong id;
     public Friend friend;

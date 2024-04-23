@@ -20,38 +20,37 @@ public class UIManager : MonoBehaviour
 
         refreshButton.onClick.AddListener(() =>
         {
-            GameNetworkManager.instance.RequestLobbies();
+            GameNetworkManager.instance.Request_Lobbies();
         });
-        //Gecomment omdat ik error kreeg (null exeption)
     }
 
     private void Start()
     {
-        GameNetworkManager.instance.RequestLobbies();
+        GameNetworkManager.instance.Request_Lobbies();
     }
 
-    public void ToggleFriends()
+    public void Toggle_Friends()
     {
         if (!friendScreen.activeSelf)
         {
             FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Back";
             friendScreen.SetActive(true);
-            GetFriends.instance.RequestFriends(true);
+            GetFriends.instance.Request_Friends(true);
         }
         else
         {
             FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Friends";
             friendScreen.SetActive(false);
-            GetFriends.instance.RequestFriends(false);
+            GetFriends.instance.Request_Friends(false);
         }
     }
 
-    public void ShowLobbySearchScreen()
+    public void Show_Lobby_Search_Screen()
     {
         lobbySearchScreen.SetActive(true);
         inLobbyScreen.SetActive(false);
     }
-    public void ShowInLobbyScreen()
+    public void Show_In_Lobby_Screen()
     {
         inLobbyScreen.SetActive(true);
         lobbySearchScreen.SetActive(false);

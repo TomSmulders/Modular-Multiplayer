@@ -18,26 +18,26 @@ public class ReadyButtonScript : MonoBehaviour
         toggle = GetComponent<Toggle>();
         text = GetComponentInChildren<TextMeshProUGUI>();
 
-        UpdateButton();
+        Update_Button_Visuals();
     }
 
-    public void OnValueChanged()
+    public void On_Value_Changed()
     {
         isReady = !isReady;
-        UpdateButton();
+        Update_Button_Visuals();
 
         if (GameNetworkManager.instance.me != null)
         {
-            GameManager.instance.ReadyUp(GameNetworkManager.instance.me, isReady, true);
+            GameManager.instance.Ready_Player_Up(GameNetworkManager.instance.me, isReady, true);
         }
         else
         {
             isReady = !isReady;
-            UpdateButton();
+            Update_Button_Visuals();
         }
     }
 
-    void UpdateButton()
+    void Update_Button_Visuals()
     {
         ColorBlock block = toggle.colors;
         block.normalColor = isReady ? readyColor : unreadyColor;

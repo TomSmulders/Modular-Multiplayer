@@ -5,6 +5,7 @@ using Steamworks;
 
 public class FriendData
 {
+    //Data
     public string username;
     public ulong id;
     public GameObject playercard;

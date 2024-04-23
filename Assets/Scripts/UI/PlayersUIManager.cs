@@ -16,6 +16,8 @@ public class PlayersUIManager : MonoBehaviour
         if (instance != null) { Destroy(this); } else { instance = this; }
     }
 
+    #region variables
+
     public GameObject HostUI;
     public GameObject ClientUI;
     [SerializeField] Color publicColor;
@@ -30,69 +32,70 @@ public class PlayersUIManager : MonoBehaviour
     [SerializeField] Color startGameColor;
     [SerializeField] Color startGameInactiveColor;
 
+    #endregion
 
-    public void IsHost(bool _state)
+    public void Is_Host(bool _state)
     {
         HostUI.SetActive(_state);
         ClientUI.SetActive(!_state);
-        SetLobbyMode(GameNetworkManager.instance.currentLobbyMode);
+        Set_Lobby_PublicityMode(GameNetworkManager.instance.currentLobbyMode);
     }
 
-    public void NextLobbyMode()
+    public void Next_Lobby_PublicityMode()
     {
-        GameNetworkManager.LobbyMode mode = GameNetworkManager.instance.currentLobbyMode;
+        GameNetworkManager.LobbyPublicityMode mode = GameNetworkManager.instance.currentLobbyMode;
         Debug.Log("1: "+mode);
 
         switch (mode)
         {
-            case LobbyMode.Public:
-                mode = LobbyMode.Private;
+            case LobbyPublicityMode.Public:
+                mode = LobbyPublicityMode.Private;
                 break;
-            case LobbyMode.Private:
-                mode = LobbyMode.FriendsOnly;
+            case LobbyPublicityMode.Private:
+                mode = LobbyPublicityMode.FriendsOnly;
                 break;
-            case LobbyMode.FriendsOnly:
-                mode = LobbyMode.Public;
+            case LobbyPublicityMode.FriendsOnly:
+                mode = LobbyPublicityMode.Public;
                 break;
-            case LobbyMode.Invisible:
-                mode = LobbyMode.Private;
+            case LobbyPublicityMode.Invisible:
+                mode = LobbyPublicityMode.Private;
                 break;
             default:
-                mode = LobbyMode.Private;
+                mode = LobbyPublicityMode.Private;
                 break;
         }
         Debug.Log("2: "+mode);
         GameNetworkManager.instance.currentLobbyMode = mode;
-        SetLobbyMode(mode);
+        Set_Lobby_PublicityMode(mode);
     }
 
-    void SetLobbyMode(GameNetworkManager.LobbyMode _lobbyMode)
+    void Set_Lobby_PublicityMode(GameNetworkManager.LobbyPublicityMode _lobbyMode)
     {
         if (NetworkManager.Singleton.IsHost)
         {
             switch (_lobbyMode)
             {
-                case LobbyMode.Public:
-                    ChangeLobbyMode("Public", publicColor);
+                case LobbyPublicityMode.Public:
+                    Change_Lobby_PublicityMode_Visuals("Public", publicColor);
                     break;
-                case LobbyMode.Private:
-                    ChangeLobbyMode("Private", privateColor);
+                case LobbyPublicityMode.Private:
+                    Change_Lobby_PublicityMode_Visuals("Private", privateColor);
                     break;
-                case LobbyMode.FriendsOnly:
-                    ChangeLobbyMode("Friends", FriendsOnlyColor);
+                case LobbyPublicityMode.FriendsOnly:
+                    Change_Lobby_PublicityMode_Visuals("Friends", FriendsOnlyColor);
                     break;
-                case LobbyMode.Invisible:
-                    ChangeLobbyMode("Invisible", InvisibleColor);
+                case LobbyPublicityMode.Invisible:
+                    Change_Lobby_PublicityMode_Visuals("Invisible", InvisibleColor);
                     break;
                 default:
-                    ChangeLobbyMode("Public", publicColor);
+                    Change_Lobby_PublicityMode_Visuals("Public", publicColor);
                     break;
             }
-            GameNetworkManager.instance.SetLobbyMode(_lobbyMode);
+            GameNetworkManager.instance.Set_Lobby_PublicityMode(_lobbyMode);
         }
     }
 
-    void ChangeLobbyMode(string _text, Color _color)
+    void Change_Lobby_PublicityMode_Visuals(string _text, Color _color)
     {
         lobbyModeText.text = _text;
 
@@ -105,22 +108,22 @@ public class PlayersUIManager : MonoBehaviour
         lobbyModeButton.colors = block;
     }
 
-    public void ExitParty()
+    public void Exit_Party()
     {
-        GameNetworkManager.instance.Disconnected();
+        GameNetworkManager.instance.Disconnect_Player();
     }
 
-    public void ExitPartyHOST()
+    public void Exit_Party_HOST()
     {
         if (NetworkManager.Singleton.IsHost)
         {
             //Add a check to actually leave
 
-            GameNetworkManager.instance.Disconnected();
+            GameNetworkManager.instance.Disconnect_Player();
         }
     }
 
-    public void ChangePartyReady(bool _ready)
+    public void Update_Party_Ready_State_Visuals(bool _ready)
     {
         if (NetworkManager.Singleton.IsHost)
         {
@@ -145,10 +148,5 @@ public class PlayersUIManager : MonoBehaviour
 
             startGameButton.colors = block;
         }
-    }
-
-    public void StartGame()
-    {
-
     }
 }

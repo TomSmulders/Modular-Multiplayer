@@ -7,24 +7,24 @@ using UnityEngine;
 
 public class GetFriends : MonoBehaviour
 {
+    #region variables
+
     public static GetFriends instance;
-    [Header("carts")]
     [SerializeField]  GameObject friendCardPrefab, friendCardParent;
     public List<GameObject> friendsCardsOnline = new List<GameObject>();
     public List<GameObject> friendsCardsOfline = new List<GameObject>();
 
+    #endregion
     private void Awake()
     {
         if (instance != null) { Destroy(this); } else { instance = this; }
     }
-
-
     private void Start()
     {
-        RequestFriends(true);
+        Request_Friends(true);
     }
 
-    public async void RequestFriends(bool visible)
+    public async void Request_Friends(bool visible)
     {
         foreach (Transform card in friendCardParent.transform)
         {
@@ -36,17 +36,15 @@ public class GetFriends : MonoBehaviour
 
         if (visible)
         {
-            Debug.Log("detroy card");
-
             foreach (Friend friend in SteamFriends.GetFriends())
             {
                 if (friend.IsOnline)
                 {
-                    friendsCardsOnline.Add(await CreateFriendCard(friend));
+                    friendsCardsOnline.Add(await Create_FriendsCard(friend));
                 }
                 if (!friend.IsOnline)
                 {
-                    friendsCardsOfline.Add(await CreateFriendCard(friend));
+                    friendsCardsOfline.Add(await Create_FriendsCard(friend));
                 }
             }
 
@@ -61,19 +59,16 @@ public class GetFriends : MonoBehaviour
             }
         }
     }
-
-
-
-    public async Task<GameObject> CreateFriendCard(Friend friend)
+    public async Task<GameObject> Create_FriendsCard(Friend friend)
     {
         GameObject card = Instantiate(friendCardPrefab);
 
         FriendInfo data = card.GetComponent<FriendInfo>();
         data.steamName = friend.Name;
         data.steamId = friend.Id;
-        data.profileImage.texture = await GameManager.instance.GetProfilePicture(friend.Id);
+        data.profileImage.texture = await GameManager.instance.Get_User_Profile_Picture(friend.Id);
 
-        data.UpdateFriendData();
+        data.Update_FriendData();
 
         return(card);
     }

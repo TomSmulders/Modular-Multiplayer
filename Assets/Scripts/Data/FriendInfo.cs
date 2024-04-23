@@ -9,6 +9,7 @@ using Steamworks.Data;
 
 public class FriendInfo : MonoBehaviour
 {
+    //Data
     [SerializeField] private TMP_Text playerName;
     public string steamName;
     public ulong steamId;
@@ -21,12 +22,11 @@ public class FriendInfo : MonoBehaviour
         {
             if (GameNetworkManager.instance.currentLobby.HasValue)
             {
-                SendInviteFriend(GameNetworkManager.instance.currentLobby.Value);
+                Send_Party_Invite_To_Friend(GameNetworkManager.instance.currentLobby.Value);
             }
         });
     }
-
-    public void UpdateFriendData()
+    public void Update_FriendData()
     {
         if (steamName == "")
         {
@@ -37,8 +37,7 @@ public class FriendInfo : MonoBehaviour
             playerName.text = steamName;
         }
     }
-
-    public void SendInviteFriend(Lobby _lobby)
+    public void Send_Party_Invite_To_Friend(Lobby _lobby)
     {
         Debug.Log("invited friend : " + _lobby.InviteFriend(this.steamId));
     }

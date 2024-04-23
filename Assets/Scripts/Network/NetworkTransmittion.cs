@@ -20,27 +20,28 @@ public class NetworkTransmittion : NetworkBehaviour
         }
     }
 
+    //Ready state rpc's
     [ServerRpc(RequireOwnership = false)]
-    public void PlayerChangedReadyStateServerRPC(ulong _id, bool _ready)
+    public void Player_Changed_Ready_State_ServerRPC(ulong _id, bool _ready)
     {
-        ChangePlayerReadyUpStateClientRPC(_id, _ready);
-        CheckIfAllPlayersAreReadyClientRPC();
+        Change_Player_Ready_State_ClientRPC(_id, _ready);
+        Check_If_All_Players_Are_Ready_ClientRPC();
     }
 
     [ClientRpc]
-    public void ChangePlayerReadyUpStateClientRPC(ulong _id, bool _ready)
+    public void Change_Player_Ready_State_ClientRPC(ulong _id, bool _ready)
     {
         foreach (PlayerData player in GameNetworkManager.instance.players)
         {
             if (player.id == _id)
             {
-                GameManager.instance.ReadyUp(player, _ready, false);
+                GameManager.instance.Ready_Player_Up(player, _ready, false);
             }
         }
     }
 
     [ClientRpc]
-    public void CheckIfAllPlayersAreReadyClientRPC()
+    public void Check_If_All_Players_Are_Ready_ClientRPC()
     {
         bool ready = true;
         foreach (PlayerData player in GameNetworkManager.instance.players)
@@ -50,24 +51,6 @@ public class NetworkTransmittion : NetworkBehaviour
                 ready = false;
             }
         }
-        GameNetworkManager.instance.UpdatePartyReady(ready);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void IWantToDebugTextServerRPC(string text)
-    {
-        DebugTextClientRPC(text);
-    } 
-
-    [ClientRpc]
-    public void DebugTextClientRPC(string text)
-    {
-        Debug.Log($"Received text from server: {text}");
-    }
-
-
-    public void SendDebugText(string text)
-    {
-        IWantToDebugTextServerRPC(text);
+        GameNetworkManager.instance.Update_If_Players_Ready(ready);
     }
 }
