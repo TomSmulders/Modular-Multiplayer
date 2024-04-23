@@ -20,7 +20,7 @@ public class NetworkTransmittion : NetworkBehaviour
         }
     }
 
-    //Ready state rpc's
+    //Ready state RPC's
     [ServerRpc(RequireOwnership = false)]
     public void Player_Changed_Ready_State_ServerRPC(ulong _id, bool _ready)
     {
@@ -52,5 +52,23 @@ public class NetworkTransmittion : NetworkBehaviour
             }
         }
         GameNetworkManager.instance.Update_If_Players_Ready(ready);
+    }
+
+    
+    
+    //Kick player RPC
+    [ServerRpc(RequireOwnership = false)]
+    public void I_Want_To_Kick_A_Player_ServerRPC(ulong _id)
+    {
+        Kick_Player_ClientRPC(_id);
+    }
+
+    [ClientRpc]
+    public void Kick_Player_ClientRPC(ulong _id)
+    {
+        if(_id == GameNetworkManager.instance.me.id)
+        {
+            GameNetworkManager.instance.Disconnect_Player();
+        }
     }
 }

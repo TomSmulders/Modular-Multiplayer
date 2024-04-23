@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     public void Ready_Player_Up(PlayerData _user,bool _ready,bool callRPC)
     {
         _user.isReady = _ready;
-        RawImage img = _user.playercard.GetComponent<PlayerCardInfo>().readyImage;
+        RawImage img = _user.playercard.GetComponent<PlayerCardScript>().readyImage;
         img.color = _ready ? UnityEngine.Color.green : UnityEngine.Color.red;
 
         foreach (var item in GetComponent<NetworkObject>().NetworkManager.ConnectedClientsIds)
@@ -69,19 +69,19 @@ public class GameManager : MonoBehaviour
         GameObject card = Instantiate(playerCardPrefab);
         card.transform.SetParent(playerCardParent.transform);
 
-        PlayerCardInfo info = card.GetComponent<PlayerCardInfo>();
+        PlayerCardScript info = card.GetComponent<PlayerCardScript>();
 
         info.steamName = player.username;
         info.steamId = player.id;
         info.isOwner = player.isOwner;
         info.ownerImage.SetActive(info.isOwner);
 
-        info.kickButton.gameObject.SetActive(false);
+        info.SettingsButton.gameObject.SetActive(false);
         if (NetworkManager.Singleton.IsHost)
         {
             if (info.steamId != SteamClient.SteamId)
             {
-                info.kickButton.gameObject.SetActive(true);
+                info.SettingsButton.gameObject.SetActive(true);
             }
         }
 

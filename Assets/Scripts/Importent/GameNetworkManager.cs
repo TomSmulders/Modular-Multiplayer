@@ -166,22 +166,30 @@ public class GameNetworkManager : NetworkBehaviour
         {
             if (_lobby.Id == _updatedLobby.Id)
             {
-                if (_lobby.GetData("CurrentLobbyMode") == LobbyPublicityMode.Public.ToString())
+                string[] bannedPlayers = _updatedLobby.GetData("BannedPlayers").Split(",");
+                if (!bannedPlayers.Contains(SteamClient.SteamId.Value.ToString()))
                 {
-                    if (_lobby.MemberCount > 0)
+                    if (_lobby.GetData("CurrentLobbyMode") == LobbyPublicityMode.Public.ToString())
                     {
-                        RoomEnter joinedLobby = await _lobby.Join();
-                        if (joinedLobby != RoomEnter.Success)
+                        if (_lobby.MemberCount > 0)
                         {
-                            Debug.Log("Failed to join lobby");
-                        }
-                        else
-                        {
-                            currentLobby = _lobby;
-                            Update_Players(_lobby.Members);
-                            UIManager.instance.Show_In_Lobby_Screen();
+                            RoomEnter joinedLobby = await _lobby.Join();
+                            if (joinedLobby != RoomEnter.Success)
+                            {
+                                Debug.Log("Failed to join lobby");
+                            }
+                            else
+                            {
+                                currentLobby = _lobby;
+                                Update_Players(_lobby.Members);
+                                UIManager.instance.Show_In_Lobby_Screen();
+                            }
                         }
                     }
+                }
+                else
+                {
+                    Debug.Log("L bozo ur banned");
                 }
             }
         }
@@ -314,6 +322,31 @@ public class GameNetworkManager : NetworkBehaviour
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
+    }
+    public void Kick_Player(long _steamId)
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            
+        }
+    }
+    public void Ban_Player(long _steamId)
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            string bannedPlayers = currentLobby.Value.GetData("BannedPlayers");
+            if (bannedPlayers == string.Empty || bannedPlayers == null || bannedPlayers == "")
+            {
+                bannedPlayers = _steamId.ToString();
+            }
+            else
+            {
+                bannedPlayers += "," + _steamId.ToString();
+            }
+            currentLobby.Value.SetData("BannedPlayers", bannedPlayers);
+
+            Kick_Player(_steamId);
+        }
     }
 
 
