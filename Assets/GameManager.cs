@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     public void ReadyUp(PlayerData _user,bool _ready,bool callRPC)
     {
         _user.isReady = _ready;
-        RawImage img = _user.playercard.GetComponent<PlayerInfo>().readyImage;
+        RawImage img = _user.playercard.GetComponent<PlayerCardInfo>().readyImage;
         img.color = _ready ? UnityEngine.Color.green : UnityEngine.Color.red;
 
         foreach (var item in GetComponent<NetworkObject>().NetworkManager.ConnectedClientsIds)
@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
         GameObject card = Instantiate(playerCardPrefab);
         card.transform.SetParent(playerCardParent.transform);
 
-        PlayerInfo info = card.GetComponent<PlayerInfo>();
+        PlayerCardInfo info = card.GetComponent<PlayerCardInfo>();
 
         info.steamName = player.username;
         info.steamId = player.id;

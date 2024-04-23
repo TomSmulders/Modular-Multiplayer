@@ -484,6 +484,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 150446183}
   m_CullTransparentMesh: 1
+--- !u!1 &161970774
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 161970776}
+  - component: {fileID: 161970775}
+  m_Layer: 0
+  m_Name: GlobalGameSettings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &161970775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161970774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91108890550941d4891ac54b9580ff95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameName: TestGame
+  maxPartySize: 5
+--- !u!4 &161970776
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161970774}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 872.2642, y: 505.16382, z: -61.611145}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &205430511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,6 +1191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb4b82af33e37ca44bd3f2523a71a2aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transport: {fileID: 0}
   currentLobbyMode: 0
 --- !u!114 &453662183
 MonoBehaviour:
@@ -3062,9 +3109,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd31d064bebf52e42abf26e27140437f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  friendCardPrefab: {fileID: 7737551932292484845, guid: c822f3dec6ec80145a54fc80fc31d135, type: 3}
+  friendCardPrefab: {fileID: 6854879417517196945, guid: 932d174f42393c948b3533e9faba12e4, type: 3}
   friendCardParent: {fileID: 2081968969}
-  friendsCards: []
+  friendsCardsOnline: []
+  friendsCardsOfline: []
 --- !u!1 &1223523610
 GameObject:
   m_ObjectHideFlags: 0
@@ -5501,3 +5549,4 @@ SceneRoots:
   - {fileID: 999106455}
   - {fileID: 1415072643}
   - {fileID: 453662184}
+  - {fileID: 161970776}
