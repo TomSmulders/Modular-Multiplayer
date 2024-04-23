@@ -26,18 +26,15 @@ public class GetFriends : MonoBehaviour
 
     public async void RequestFriends(bool visible)
     {
-        if (!visible)
+        foreach (Transform card in friendCardParent.transform)
         {
-            foreach (GameObject card in friendsCardsOnline)
-            {
-                Destroy(card);
-            }
-            foreach (GameObject card in friendsCardsOfline)
-            {
-                Destroy(card);
-            }
+            Destroy(card.gameObject);
         }
-        else
+
+        friendsCardsOnline.Clear();
+        friendsCardsOfline.Clear();
+
+        if (visible)
         {
             Debug.Log("detroy card");
 
