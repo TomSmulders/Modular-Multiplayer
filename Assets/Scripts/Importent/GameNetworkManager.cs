@@ -323,14 +323,14 @@ public class GameNetworkManager : NetworkBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
     }
-    public void Kick_Player(long _steamId)
+    public void Kick_Player(ulong _steamId)
     {
         if (NetworkManager.Singleton.IsHost)
         {
             
         }
     }
-    public void Ban_Player(long _steamId)
+    public void Ban_Player(ulong _steamId)
     {
         if (NetworkManager.Singleton.IsHost)
         {
