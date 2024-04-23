@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Steamworks;
 
-public class PlayerInfo : MonoBehaviour
+public class PlayerCardInfo : MonoBehaviour
 {
     [SerializeField] private TMP_Text playerName;
     public string steamName;
