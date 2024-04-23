@@ -35,6 +35,8 @@ public class GameNetworkManager : NetworkBehaviour
         SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
         SteamMatchmaking.OnLobbyMemberJoined += OnLobbyMemberJoined;
         SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberLeave;
+
+        SteamFriends.OnGameLobbyJoinRequested += SteamFriends_OnGameLobbyJoinRequested;
     } 
 
     private void OnDestroy()
@@ -42,6 +44,8 @@ public class GameNetworkManager : NetworkBehaviour
         SteamMatchmaking.OnLobbyEntered -= OnLobbyEntered;
         SteamMatchmaking.OnLobbyMemberJoined -= OnLobbyMemberJoined;
         SteamMatchmaking.OnLobbyMemberLeave -= OnLobbyMemberLeave;
+
+        SteamFriends.OnGameLobbyJoinRequested -= SteamFriends_OnGameLobbyJoinRequested;
     }
 
     private void OnLobbyEntered(Lobby _lobby)
@@ -181,6 +185,11 @@ public class GameNetworkManager : NetworkBehaviour
             Debug.Log("disconnect");
             Disconnected();
         }
+    }
+
+    public async void SteamFriends_OnGameLobbyJoinRequested(Lobby _lobby, SteamId _user)
+    {
+        RoomEnter joinedLobby = await _lobby.Join();
     }
 
 
