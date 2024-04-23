@@ -1966,7 +1966,7 @@ MonoBehaviour:
   lobbySearchScreen: {fileID: 429549333}
   inLobbyScreen: {fileID: 1107305266}
   refreshButton: {fileID: 1661458892}
-  FriendsButton: {fileID: 0}
+  FriendsButton: {fileID: 1785966106}
 --- !u!1 &679134589
 GameObject:
   m_ObjectHideFlags: 0

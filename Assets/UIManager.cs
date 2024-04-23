@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -23,6 +24,14 @@ public class UIManager : MonoBehaviour
         });
         FriendsButton.onClick.AddListener(() =>
         {
+            if (GetFriends.instance.gameObject.activeSelf)
+            {
+                FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Back";
+            }
+            else
+            {
+                FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Friends";
+            }
             GetFriends.instance.RequestFriends();
         });
         //Gecomment omdat ik error kreeg (null exeption)

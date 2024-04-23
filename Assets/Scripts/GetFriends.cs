@@ -26,31 +26,36 @@ public class GetFriends : MonoBehaviour
 
     public async void RequestFriends()
     {
-        foreach (GameObject card in friendsCardsOnline)
+        gameObject.SetActive(!gameObject.activeSelf);
+
+        if (gameObject.activeSelf)
         {
-            Destroy(card);
-        }
-        Debug.Log("detroy cart");
-        foreach (Friend friend in SteamFriends.GetFriends())
-        {
-            if (friend.IsOnline)
+            foreach (GameObject card in friendsCardsOnline)
             {
-                friendsCardsOnline.Add(await CreateFriendCard(friend));
+                Destroy(card);
             }
-            if (!friend.IsOnline)
+            Debug.Log("detroy cart");
+            foreach (Friend friend in SteamFriends.GetFriends())
             {
-                friendsCardsOfline.Add(await CreateFriendCard(friend));
+                if (friend.IsOnline)
+                {
+                    friendsCardsOnline.Add(await CreateFriendCard(friend));
+                }
+                if (!friend.IsOnline)
+                {
+                    friendsCardsOfline.Add(await CreateFriendCard(friend));
+                }
             }
-        }
-        
-        foreach (var card in friendsCardsOnline)
-        {
-            card.transform.SetParent(friendCardParent.transform);
-            Debug.Log("create");
-        }
-        foreach (var card in friendsCardsOfline)
-        {
-            card.transform.SetParent(friendCardParent.transform);
+
+            foreach (var card in friendsCardsOnline)
+            {
+                card.transform.SetParent(friendCardParent.transform);
+                Debug.Log("create");
+            }
+            foreach (var card in friendsCardsOfline)
+            {
+                card.transform.SetParent(friendCardParent.transform);
+            }
         }
     }
 
