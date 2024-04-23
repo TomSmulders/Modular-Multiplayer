@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
 
-    [SerializeField] GameObject lobbySearchScreen, inLobbyScreen;
+    [SerializeField] GameObject lobbySearchScreen, inLobbyScreen , friendScreen;
     [SerializeField] Button refreshButton;
     [SerializeField] Button FriendsButton;
 
@@ -22,24 +22,27 @@ public class UIManager : MonoBehaviour
         {
             GameNetworkManager.instance.RequestLobbies();
         });
-        FriendsButton.onClick.AddListener(() =>
-        {
-            if (GetFriends.instance.gameObject.activeSelf)
-            {
-                FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Back";
-            }
-            else
-            {
-                FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Friends";
-            }
-            GetFriends.instance.RequestFriends();
-        });
         //Gecomment omdat ik error kreeg (null exeption)
     }
 
     private void Start()
     {
         GameNetworkManager.instance.RequestLobbies();
+    }
+
+    public void ToggleFriends()
+    {
+        if (!friendScreen.activeSelf)
+        {
+            FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Back";
+            friendScreen.SetActive(true);
+            GetFriends.instance.RequestFriends();
+        }
+        else
+        {
+            FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Friends";
+            friendScreen.SetActive(false);
+        }
     }
 
     public void ShowLobbySearchScreen()

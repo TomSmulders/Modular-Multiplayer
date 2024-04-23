@@ -9,7 +9,7 @@ public class GetFriends : MonoBehaviour
 {
     public static GetFriends instance;
     [Header("carts")]
-    [SerializeField] private GameObject friendCardPrefab, friendCardParent;
+    [SerializeField]  GameObject friendCardPrefab, friendCardParent;
     public List<GameObject> friendsCardsOnline = new List<GameObject>();
     public List<GameObject> friendsCardsOfline = new List<GameObject>();
 
@@ -26,36 +26,32 @@ public class GetFriends : MonoBehaviour
 
     public async void RequestFriends()
     {
-        gameObject.SetActive(!gameObject.activeSelf);
-
-        if (gameObject.activeSelf)
+        foreach (GameObject card in friendsCardsOnline)
         {
-            foreach (GameObject card in friendsCardsOnline)
-            {
-                Destroy(card);
-            }
-            Debug.Log("detroy cart");
-            foreach (Friend friend in SteamFriends.GetFriends())
-            {
-                if (friend.IsOnline)
-                {
-                    friendsCardsOnline.Add(await CreateFriendCard(friend));
-                }
-                if (!friend.IsOnline)
-                {
-                    friendsCardsOfline.Add(await CreateFriendCard(friend));
-                }
-            }
+            Destroy(card);
+        }
+        Debug.Log("detroy card");
 
-            foreach (var card in friendsCardsOnline)
+        foreach (Friend friend in SteamFriends.GetFriends())
+        {
+            if (friend.IsOnline)
             {
-                card.transform.SetParent(friendCardParent.transform);
-                Debug.Log("create");
+                friendsCardsOnline.Add(await CreateFriendCard(friend));
             }
-            foreach (var card in friendsCardsOfline)
+            if (!friend.IsOnline)
             {
-                card.transform.SetParent(friendCardParent.transform);
+                friendsCardsOfline.Add(await CreateFriendCard(friend));
             }
+        }
+
+        foreach (var card in friendsCardsOnline)
+        {
+            card.transform.SetParent(friendCardParent.transform);
+            Debug.Log("create");
+        }
+        foreach (var card in friendsCardsOfline)
+        {
+            card.transform.SetParent(friendCardParent.transform);
         }
     }
 
