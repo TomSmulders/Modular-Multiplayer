@@ -190,6 +190,16 @@ public class GameNetworkManager : NetworkBehaviour
     public async void SteamFriends_OnGameLobbyJoinRequested(Lobby _lobby, SteamId _user)
     {
         RoomEnter joinedLobby = await _lobby.Join();
+        if (joinedLobby != RoomEnter.Success)
+        {
+            Debug.Log("Failed to join lobby");
+        }
+        else
+        {
+            currentLobby = _lobby;
+            UpdatePlayers(_lobby.Members);
+            UIManager.instance.ShowInLobbyScreen();
+        }
     }
 
 
