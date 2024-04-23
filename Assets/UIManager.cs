@@ -36,12 +36,13 @@ public class UIManager : MonoBehaviour
         {
             FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Back";
             friendScreen.SetActive(true);
-            GetFriends.instance.RequestFriends();
+            GetFriends.instance.RequestFriends(true);
         }
         else
         {
             FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Friends";
             friendScreen.SetActive(false);
+            GetFriends.instance.RequestFriends(false);
         }
     }
 

@@ -21,37 +21,47 @@ public class GetFriends : MonoBehaviour
 
     private void Start()
     {
-        RequestFriends();
+        RequestFriends(true);
     }
 
-    public async void RequestFriends()
+    public async void RequestFriends(bool visible)
     {
-        foreach (GameObject card in friendsCardsOnline)
+        if (!visible)
         {
-            Destroy(card);
-        }
-        Debug.Log("detroy card");
-
-        foreach (Friend friend in SteamFriends.GetFriends())
-        {
-            if (friend.IsOnline)
+            foreach (GameObject card in friendsCardsOnline)
             {
-                friendsCardsOnline.Add(await CreateFriendCard(friend));
+                Destroy(card);
             }
-            if (!friend.IsOnline)
+            foreach (GameObject card in friendsCardsOfline)
             {
-                friendsCardsOfline.Add(await CreateFriendCard(friend));
+                Destroy(card);
             }
         }
+        else
+        {
+            Debug.Log("detroy card");
 
-        foreach (var card in friendsCardsOnline)
-        {
-            card.transform.SetParent(friendCardParent.transform);
-            Debug.Log("create");
-        }
-        foreach (var card in friendsCardsOfline)
-        {
-            card.transform.SetParent(friendCardParent.transform);
+            foreach (Friend friend in SteamFriends.GetFriends())
+            {
+                if (friend.IsOnline)
+                {
+                    friendsCardsOnline.Add(await CreateFriendCard(friend));
+                }
+                if (!friend.IsOnline)
+                {
+                    friendsCardsOfline.Add(await CreateFriendCard(friend));
+                }
+            }
+
+            foreach (var card in friendsCardsOnline)
+            {
+                card.transform.SetParent(friendCardParent.transform);
+                Debug.Log("create");
+            }
+            foreach (var card in friendsCardsOfline)
+            {
+                card.transform.SetParent(friendCardParent.transform);
+            }
         }
     }
 
