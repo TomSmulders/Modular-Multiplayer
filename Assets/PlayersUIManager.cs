@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using UnityEngine.UI;
 using TMPro;
@@ -107,6 +108,7 @@ public class PlayersUIManager : MonoBehaviour
     public void ExitParty()
     {
         GameNetworkManager.instance.Disconnected();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void ExitPartyHOST()
@@ -116,6 +118,8 @@ public class PlayersUIManager : MonoBehaviour
             //Add a check to actually leave
 
             GameNetworkManager.instance.Disconnected();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
         }
     }
 
