@@ -1179,9 +1179,9 @@ MonoBehaviour:
   ownerImage: {fileID: 7618535950899596055}
   isReady: 0
   isOwner: 0
-  SettingsButton: {fileID: 0}
-  playerInfo: {fileID: 0}
-  settings: {fileID: 0}
+  SettingsButton: {fileID: 6882476202427933086}
+  playerInfo: {fileID: 8784877048131769736}
+  settings: {fileID: 8679482728242414061}
   settingsIcon: {fileID: 0}
   backicon: {fileID: 0}
   profileImage: {fileID: 2598489762945463076}
