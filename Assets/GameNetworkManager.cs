@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using Steamworks;
 using Steamworks.Data;
@@ -216,9 +217,13 @@ public class GameNetworkManager : NetworkBehaviour
             NetworkManager.Singleton.OnClientConnectedCallback -= Singleton_OnClientConnectedCallback;
         }
 
+        players.Clear();
+
         NetworkManager.Singleton.Shutdown(true);
-        GameManager.instance.Disconnected();
         Debug.Log("Disconnected");
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
     }
 
 

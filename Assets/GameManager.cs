@@ -17,8 +17,6 @@ public class GameManager : MonoBehaviour
     public List<GameObject> lobbyCards = new List<GameObject>();
     public List<GameObject> playerCards = new List<GameObject>();
 
-    public Dictionary<ulong, GameObject> playerInfo = new Dictionary<ulong, GameObject>();
-
     public ulong myClientID;
 
     private void Awake()
@@ -92,16 +90,6 @@ public class GameManager : MonoBehaviour
 
         player.profilePicture = await GetProfilePicture(info.steamId);
         info.profileImage.texture = player.profilePicture;
-    }
-
-    public void Disconnected()
-    {
-        playerInfo.Clear();
-        foreach (GameObject card in playerCards)
-        {
-            Destroy(card);
-        }
-        UIManager.instance.ShowLobbySearchScreen();
     }
 
     public async Task<Texture2D> GetProfilePicture(ulong _SteamId)
