@@ -40,6 +40,6 @@ public class FriendInfo : MonoBehaviour
 
     public void SendInviteFriend(Lobby _lobby)
     {
-        _lobby.InviteFriend(this.steamId);
+        Debug.Log("invited friend : " + _lobby.InviteFriend(this.steamId));
     }
 }

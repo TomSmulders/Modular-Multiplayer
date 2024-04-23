@@ -629,5 +629,5 @@ MonoBehaviour:
   playerName: {fileID: 3097320423524370914}
   steamName: 
   steamId: 0
-  infite: {fileID: 627290789047448600}
+  InviteFriend: {fileID: 627290789047448600}
   profileImage: {fileID: 2172705347534910193}
