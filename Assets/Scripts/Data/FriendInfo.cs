@@ -15,6 +15,7 @@ public class FriendInfo : MonoBehaviour
     public ulong steamId;
     public Button InviteFriend;
     public RawImage profileImage;
+    public GameObject isPlayingThisGameImage;
 
     void Awake()
     {

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GetFriends : MonoBehaviour
 {
@@ -11,9 +12,13 @@ public class GetFriends : MonoBehaviour
 
     public static GetFriends instance;
     [SerializeField]  GameObject friendCardPrefab, friendCardParent;
+    public List<GameObject> friendsCardsOnlineAndPlayingThisGame = new List<GameObject>();
     public List<GameObject> friendsCardsOnline = new List<GameObject>();
     public List<GameObject> friendsCardsOfline = new List<GameObject>();
 
+
+    float alphaOnline = 1f;
+    float alphaOfline = 0.22f;
     #endregion
     private void Awake()
     {
@@ -38,14 +43,24 @@ public class GetFriends : MonoBehaviour
         {
             foreach (Friend friend in SteamFriends.GetFriends())
             {
-                if (friend.IsOnline)
+
+                if (friend.IsPlayingThisGame)
                 {
-                    friendsCardsOnline.Add(await Create_FriendsCard(friend));
+                    friendsCardsOnlineAndPlayingThisGame.Add(await Create_FriendsCard(friend, true, alphaOnline));
+                }
+                if (friend.IsOnline && !friend.IsPlayingThisGame)
+                {
+                        friendsCardsOnline.Add(await Create_FriendsCard(friend, false, alphaOnline));
                 }
                 if (!friend.IsOnline)
                 {
-                    friendsCardsOfline.Add(await Create_FriendsCard(friend));
+                    friendsCardsOfline.Add(await Create_FriendsCard(friend, false, alphaOfline));   
                 }
+            }
+
+            foreach (var card in friendsCardsOnlineAndPlayingThisGame)
+            {
+                card.transform.SetParent(friendCardParent.transform);
             }
 
             foreach (var card in friendsCardsOnline)
@@ -56,10 +71,11 @@ public class GetFriends : MonoBehaviour
             foreach (var card in friendsCardsOfline)
             {
                 card.transform.SetParent(friendCardParent.transform);
+                
             }
         }
     }
-    public async Task<GameObject> Create_FriendsCard(Friend friend)
+    public async Task<GameObject> Create_FriendsCard(Friend friend, bool PlayingThisGame, float alpha)
     {
         GameObject card = Instantiate(friendCardPrefab);
 
@@ -67,6 +83,16 @@ public class GetFriends : MonoBehaviour
         data.steamName = friend.Name;
         data.steamId = friend.Id;
         data.profileImage.texture = await GameManager.instance.Get_User_Profile_Picture(friend.Id);
+
+        if (!PlayingThisGame)
+        {
+            data.isPlayingThisGameImage.active = false;
+        }
+
+
+        UnityEngine.Color currColor = data.profileImage.color;
+        currColor.a = alpha;
+        data.profileImage.color = currColor;
 
         data.Update_FriendData();
 
