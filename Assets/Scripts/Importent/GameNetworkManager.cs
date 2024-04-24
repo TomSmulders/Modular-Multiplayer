@@ -133,7 +133,7 @@ public class GameNetworkManager : NetworkBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += Singleton_OnClientDisconnectCallback;
 
-        NetworkManager.Singleton.StartClient();
+        NetworkManager.Singleton.StartClient();   
     }
 
 
