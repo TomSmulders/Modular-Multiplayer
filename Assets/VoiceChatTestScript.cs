@@ -41,9 +41,11 @@ public class VoiceChatTestScript : NetworkBehaviour
             float[] audioData = new float[audioClip.samples * audioClip.channels];
             audioClip.GetData(audioData, 0);
 
-            int dataSize = audioData.Length * sizeof(float);
-            byte[] byteData = new byte[dataSize];
-            Buffer.BlockCopy(audioData, 0, byteData, 0, dataSize);
+            int sampleCount = audioData.Length;
+            int byteCount = sampleCount * sizeof(float);
+            byte[] byteData = new byte[byteCount];
+
+            Buffer.BlockCopy(audioData, 0, byteData, 0, byteCount);
 
             // Send audio data to clients
             SendMessageToClients(byteData);
@@ -64,14 +66,33 @@ public class VoiceChatTestScript : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void SendMessageToClientServerRpc(ulong localClientid, byte[] byteData)
+    private void SendMessageToClientServerRpc(ulong localClientId, byte[] byteData)
     {
+        if (byteData == null || byteData.Length == 0)
+        {
+            Debug.LogWarning("Byte data is null or empty. Aborting send.");
+            return;
+        }
+
+        // Set a reasonable maximum packet size (e.g., 1024 bytes)
+        int maxPacketSize = 1024;
+
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClients.Keys)
         {
             // Skip sending audio data to the server itself
-            if (clientId != localClientid)
+            if (clientId != localClientId)
             {
-                TargetReceiveAudioDataClientRpc(clientId, byteData);
+                int offset = 0;
+
+                while (offset < byteData.Length)
+                {
+                    int count = Math.Min(maxPacketSize, byteData.Length - offset);
+                    byte[] packetData = new byte[count];
+                    Buffer.BlockCopy(byteData, offset, packetData, 0, count);
+                    offset += count;
+
+                    TargetReceiveAudioDataClientRpc(clientId, packetData);
+                }
             }
         }
     }
@@ -83,7 +104,16 @@ public class VoiceChatTestScript : NetworkBehaviour
         {
             // Only process audio data intended for the local client
             Debug.Log("Receiving audio data from server.");
-            ClientAudioReceiver.Instance.ReceiveAudioData(byteData);
+
+            // Check if the byte data is valid
+            if (byteData != null && byteData.Length > 0)
+            {
+                ClientAudioReceiver.Instance.ReceiveAudioData(byteData);
+            }
+            else
+            {
+                Debug.LogWarning("Received invalid audio data.");
+            }
         }
     }
 
