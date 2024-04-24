@@ -23,7 +23,7 @@ public class VoiceChatTestScript : NetworkBehaviour
         if (Array.Exists(Microphone.devices, device => device == selectedMicrophone))
         {
             // Start recording from the selected microphone
-            audioClip = Microphone.Start(selectedMicrophone, true, 10, 44100);
+            audioClip = Microphone.Start(selectedMicrophone, true, 1000, 44100);
         }
         else
         {
