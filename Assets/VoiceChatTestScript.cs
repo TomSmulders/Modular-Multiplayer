@@ -11,15 +11,30 @@ public class VoiceChatTestScript : NetworkBehaviour
     private AudioClip audioClip;
     public bool isMuted = false;
 
+    private string selectedMicrophone = "Mixer (Maonocaster C2 Neo)"; // Fill in the name of your desired microphone
+
     void Start()
     {
-        // Start recording from the microphone
-        audioClip = Microphone.Start(null, true, 0, 44100);
+        foreach (var item in Microphone.devices)
+        {
+            Debug.Log(item);
+        }
+        // Check if the selected microphone is available
+        if (Array.Exists(Microphone.devices, device => device == selectedMicrophone))
+        {
+            // Start recording from the selected microphone
+            audioClip = Microphone.Start(selectedMicrophone, true, 10, 44100);
+        }
+        else
+        {
+            Debug.LogError("Selected microphone not found!");
+        }
     }
 
     void Update()
     {
         // Check if the microphone is recording
+        //Debug.Log(Microphone.IsRecording(null));
         if (Microphone.IsRecording(null))
         {
             // Convert AudioClip data to byte array
