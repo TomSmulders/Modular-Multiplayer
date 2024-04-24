@@ -1,18 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 using Netcode;
 using Unity.Netcode;
-using Steamworks;
 using Netcode.Transports.Facepunch;
-using Steamworks.Data;
 using System;
 
 public class VoiceChatTestScript : NetworkBehaviour
 {
     private AudioClip audioClip;
-
     public bool isMuted = false;
 
     void Start()
@@ -41,17 +37,21 @@ public class VoiceChatTestScript : NetworkBehaviour
     private void SendMessageToClients(byte[] byteData)
     {
         // Check if connected to a server as a client and not muted
-        if (NetworkManager.Singleton.IsConnectedClient && !isMuted)
+        if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.IsConnectedClient && !isMuted)
         {
             foreach (ulong clientId in NetworkManager.Singleton.ConnectedClients.Keys)
             {
                 // Skip sending audio data to the server itself
                 if (clientId != NetworkManager.Singleton.LocalClientId)
                 {
-                    Debug.Log("sending audio to : " + clientId);
+                    Debug.Log("Sending audio to client: " + clientId);
                     SendMessageToClientServerRpc(clientId, byteData);
                 }
             }
+        }
+        else
+        {
+            Debug.LogWarning("Not connected to a server or client is muted.");
         }
     }
 
@@ -67,6 +67,7 @@ public class VoiceChatTestScript : NetworkBehaviour
         if (clientId == NetworkManager.Singleton.LocalClientId)
         {
             // Only process audio data intended for the local client
+            Debug.Log("Receiving audio data from server.");
             ClientAudioReceiver.Instance.ReceiveAudioData(byteData);
         }
     }
