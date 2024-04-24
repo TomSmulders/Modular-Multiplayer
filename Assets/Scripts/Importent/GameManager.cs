@@ -42,11 +42,6 @@ public class GameManager : MonoBehaviour
         RawImage img = _user.playercard.GetComponent<PlayerCardScript>().readyImage;
         img.color = _ready ? UnityEngine.Color.green : UnityEngine.Color.red;
 
-        foreach (var item in GetComponent<NetworkObject>().NetworkManager.ConnectedClientsIds)
-        {
-            Debug.Log("Client: " + item);
-        }
-
         if (callRPC)
         {
             NetworkTransmittion.instance.Player_Changed_Ready_State_ServerRPC(_user.id,_ready);
