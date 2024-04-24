@@ -11,7 +11,7 @@ public class VoiceChatTestScript : NetworkBehaviour
     private AudioClip audioClip;
     public bool isMuted = false;
 
-    private string selectedMicrophone = "Mixer (Maonocaster C2 Neo)"; // Fill in the name of your desired microphone
+    private string selectedMicrophone = "Mixer (Maonocaster C2 Neo)";
 
     void Start()
     {
@@ -19,6 +19,7 @@ public class VoiceChatTestScript : NetworkBehaviour
         {
             Debug.Log(item);
         }
+
         // Check if the selected microphone is available
         if (Array.Exists(Microphone.devices, device => device == selectedMicrophone))
         {
@@ -34,15 +35,15 @@ public class VoiceChatTestScript : NetworkBehaviour
     void Update()
     {
         // Check if the microphone is recording
-        //Debug.Log(Microphone.IsRecording(null));
-        if (Microphone.IsRecording(null))
+        if (Microphone.IsRecording(selectedMicrophone))
         {
             // Convert AudioClip data to byte array
             float[] audioData = new float[audioClip.samples * audioClip.channels];
             audioClip.GetData(audioData, 0);
 
-            byte[] byteData = new byte[audioData.Length * 4];
-            Buffer.BlockCopy(audioData, 0, byteData, 0, byteData.Length);
+            int dataSize = audioData.Length * sizeof(float);
+            byte[] byteData = new byte[dataSize];
+            Buffer.BlockCopy(audioData, 0, byteData, 0, dataSize);
 
             // Send audio data to clients
             SendMessageToClients(byteData);
@@ -54,15 +55,7 @@ public class VoiceChatTestScript : NetworkBehaviour
         // Check if connected to a server as a client and not muted
         if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.IsConnectedClient && !isMuted)
         {
-            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClients.Keys)
-            {
-                // Skip sending audio data to the server itself
-                if (clientId != NetworkManager.Singleton.LocalClientId)
-                {
-                    Debug.Log("Sending audio to client: " + clientId);
-                    SendMessageToClientServerRpc(clientId, byteData);
-                }
-            }
+            SendMessageToClientServerRpc(NetworkManager.LocalClientId, byteData);
         }
         else
         {
@@ -71,9 +64,16 @@ public class VoiceChatTestScript : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void SendMessageToClientServerRpc(ulong clientId, byte[] byteData)
+    private void SendMessageToClientServerRpc(ulong localClientid, byte[] byteData)
     {
-        TargetReceiveAudioDataClientRpc(clientId, byteData);
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClients.Keys)
+        {
+            // Skip sending audio data to the server itself
+            if (clientId != localClientid)
+            {
+                TargetReceiveAudioDataClientRpc(clientId, byteData);
+            }
+        }
     }
 
     [ClientRpc]
@@ -90,6 +90,6 @@ public class VoiceChatTestScript : NetworkBehaviour
     void OnDestroy()
     {
         // Stop the microphone recording
-        Microphone.End(null);
+        Microphone.End(selectedMicrophone);
     }
 }
