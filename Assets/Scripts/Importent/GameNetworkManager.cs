@@ -58,7 +58,7 @@ public class GameNetworkManager : NetworkBehaviour
         {
             Start_Client(_lobby.Owner.Id);
         }
-
+        VoiceManager.instance.JoinChannel(_lobby.Id.ToString());
         PlayersUIManager.instance.Is_Host(NetworkManager.Singleton.IsHost);
 
         Update_Players(_lobby.Members);
@@ -305,6 +305,8 @@ public class GameNetworkManager : NetworkBehaviour
     //leaving
     public void Disconnect_Player()
     {
+        VoiceManager.instance.LeaveChannel();
+
         currentLobby?.Leave();
         if (NetworkManager.Singleton == null)
         {

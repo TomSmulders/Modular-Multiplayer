@@ -3,123 +3,118 @@ using System.Collections.Generic;
 using UnityEngine;
 using Netcode;
 using Unity.Netcode;
+using Steamworks;
 using Netcode.Transports.Facepunch;
+using System.IO;
+using System.Linq;
+using UnityEngine.UI;
 using System;
 
-public class VoiceChatTestScript : NetworkBehaviour
+public class VoiceChat : NetworkBehaviour
 {
-    private AudioClip audioClip;
-    public bool isMuted = false;
+    [SerializeField]
+    private AudioSource source;
 
-    private string selectedMicrophone = "Mixer (Maonocaster C2 Neo)";
+    private MemoryStream output;
+    private MemoryStream stream;
+    private MemoryStream input;
 
-    void Start()
+    private int optimalRate;
+    private int clipBufferSize;
+    private float[] clipBuffer;
+
+    private int playbackBuffer;
+    private int dataPosition;
+    private int dataReceived;
+
+    private void Start()
     {
-        foreach (var item in Microphone.devices)
-        {
-            Debug.Log(item);
-        }
+        SteamClient.Init(480);
 
-        // Check if the selected microphone is available
-        if (Array.Exists(Microphone.devices, device => device == selectedMicrophone))
-        {
-            // Start recording from the selected microphone
-            audioClip = Microphone.Start(selectedMicrophone, true, 1000, 44100);
-        }
-        else
-        {
-            Debug.LogError("Selected microphone not found!");
-        }
+        optimalRate = (int)SteamUser.OptimalSampleRate;
+
+        clipBufferSize = optimalRate * 5;
+        clipBuffer = new float[clipBufferSize];
+
+        stream = new MemoryStream();
+        output = new MemoryStream();
+        input = new MemoryStream();
+
+        source.clip = AudioClip.Create("VoiceData", (int)256, 1, (int)optimalRate, true, OnAudioRead, null);
+        source.loop = true;
+        source.Play();
     }
 
-    void Update()
+    private void Update()
     {
-        // Check if the microphone is recording
-        if (Microphone.IsRecording(selectedMicrophone))
+        SteamUser.VoiceRecord = Input.GetKey(KeyCode.V);
+
+        Debug.Log(SteamClient.Name + " : " + SteamUser.SteamLevel + " : " + SteamUser.VoiceRecord + " : " + SteamUser.HasVoiceData);
+
+        if (SteamUser.HasVoiceData)
         {
-            // Convert AudioClip data to byte array
-            float[] audioData = new float[audioClip.samples * audioClip.channels];
-            audioClip.GetData(audioData, 0);
+            int compressedWritten = SteamUser.ReadVoiceData(stream);
+            stream.Position = 0;
 
-            int sampleCount = audioData.Length;
-            int byteCount = sampleCount * sizeof(float);
-            byte[] byteData = new byte[byteCount];
-
-            Buffer.BlockCopy(audioData, 0, byteData, 0, byteCount);
-
-            // Send audio data to clients
-            SendMessageToClients(byteData);
+            CmdVoice(stream.GetBuffer(), compressedWritten);
         }
+
     }
 
-    private void SendMessageToClients(byte[] byteData)
+    public void CmdVoice(byte[] compressed, int bytesWritten)
     {
-        // Check if connected to a server as a client and not muted
-        if (NetworkManager.Singleton.IsClient && NetworkManager.Singleton.IsConnectedClient && !isMuted)
-        {
-            SendMessageToClientServerRpc(NetworkManager.LocalClientId, byteData);
-        }
-        else
-        {
-            Debug.LogWarning("Not connected to a server or client is muted.");
-        }
+        RpcVoiceData_ClientRpc(compressed, bytesWritten);
     }
 
-    [ServerRpc]
-    private void SendMessageToClientServerRpc(ulong localClientId, byte[] byteData)
-    {
-        if (byteData == null || byteData.Length == 0)
-        {
-            Debug.LogWarning("Byte data is null or empty. Aborting send.");
-            return;
-        }
-
-        // Set a reasonable maximum packet size (e.g., 1024 bytes)
-        int maxPacketSize = 1024;
-
-        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClients.Keys)
-        {
-            // Skip sending audio data to the server itself
-            if (clientId != localClientId)
-            {
-                int offset = 0;
-
-                while (offset < byteData.Length)
-                {
-                    int count = Math.Min(maxPacketSize, byteData.Length - offset);
-                    byte[] packetData = new byte[count];
-                    Buffer.BlockCopy(byteData, offset, packetData, 0, count);
-                    offset += count;
-
-                    TargetReceiveAudioDataClientRpc(clientId, packetData);
-                }
-            }
-        }
-    }
 
     [ClientRpc]
-    private void TargetReceiveAudioDataClientRpc(ulong clientId, byte[] byteData)
+    public void RpcVoiceData_ClientRpc(byte[] compressed, int bytesWritten)
     {
-        if (clientId == NetworkManager.Singleton.LocalClientId)
-        {
-            // Only process audio data intended for the local client
-            Debug.Log("Receiving audio data from server.");
+        input.Write(compressed, 0, bytesWritten);
+        input.Position = 0;
 
-            // Check if the byte data is valid
-            if (byteData != null && byteData.Length > 0)
+        int uncompressedWritten = SteamUser.DecompressVoice(input, bytesWritten, output);
+        input.Position = 0;
+
+        byte[] outputBuffer = output.GetBuffer();
+        WriteToClip(outputBuffer, uncompressedWritten);
+        output.Position = 0;
+    }
+
+    private void OnAudioRead(float[] data)
+    {
+        for (int i = 0; i < data.Length; ++i)
+        {
+            // start with silence
+            data[i] = 0;
+
+            // do I  have anything to play?
+            if (playbackBuffer > 0)
             {
-                ClientAudioReceiver.Instance.ReceiveAudioData(byteData);
+                // current data position playing
+                dataPosition = (dataPosition + 1) % clipBufferSize;
+
+                data[i] = clipBuffer[dataPosition];
+
+                playbackBuffer--;
             }
-            else
-            {
-                Debug.LogWarning("Received invalid audio data.");
-            }
+        }
+
+    }
+
+    private void WriteToClip(byte[] uncompressed, int iSize)
+    {
+        for (int i = 0; i < iSize; i += 2)
+        {
+            // insert converted float to buffer
+            float converted = (short)(uncompressed[i] | uncompressed[i + 1] << 8) / 32767.0f;
+            clipBuffer[dataReceived] = converted;
+
+            // buffer loop
+            dataReceived = (dataReceived + 1) % clipBufferSize;
+
+            playbackBuffer++;
         }
     }
 
-    void OnDestroy()
-    {
-        // Stop the microphone recording
-        Microphone.End(selectedMicrophone);
-    }
 }
