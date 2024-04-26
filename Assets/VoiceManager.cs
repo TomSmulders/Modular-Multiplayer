@@ -33,15 +33,12 @@ public class VoiceManager : MonoBehaviour
         await VivoxService.Instance.InitializeAsync();
     }
 
-    public async void Login()
+    private void OnApplicationQuit()
     {
-        LoginOptions options = new LoginOptions();
-        options.DisplayName = SteamClient.Name;
-        options.EnableTTS = true;
-        await VivoxService.Instance.LoginAsync(options);
+        LeaveChannel();
     }
 
-    private void OnApplicationQuit()
+    private void OnDisable()
     {
         LeaveChannel();
     }
@@ -53,7 +50,14 @@ public class VoiceManager : MonoBehaviour
 
     public async void JoinChannel(string channelToJoin)
     {
-        Login();
+        LoginOptions options = new LoginOptions();
+        options.DisplayName = SteamClient.SteamId.ToString();
+        options.EnableTTS = true;
+        if (!VivoxService.Instance.IsLoggedIn)
+        {
+            await VivoxService.Instance.LoginAsync(options);
+        }
+
         await VivoxService.Instance.JoinEchoChannelAsync(channelToJoin, ChatCapability.TextAndAudio);
         currentChannel = channelToJoin;
     }
