@@ -20,7 +20,7 @@ public class VoiceManager : MonoBehaviour
 
     public string currentChannel;
 
-    private void start()
+    private void Awake()
     {
         if(instance == null) { instance = this; } else { Destroy(this); }
         InitializeAsync();
