@@ -27,13 +27,16 @@ public class VoiceManager : MonoBehaviour
     }
     async void InitializeAsync()
     {
-        await UnityServices.InitializeAsync();
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        if (!VivoxService.Instance.IsLoggedIn)
+        {
+            await UnityServices.InitializeAsync();
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-        await VivoxService.Instance.InitializeAsync();
+            await VivoxService.Instance.InitializeAsync();
+        }
     }
 
-    public async void LoginToVivoxAsync()
+    public async void Login()
     {
         LoginOptions options = new LoginOptions();
         options.DisplayName = SteamClient.Name;
@@ -44,24 +47,25 @@ public class VoiceManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         LeaveChannel();
-        LogoutOfVivoxAsync();
     }
 
-    public async void LogoutOfVivoxAsync()
+    public async void Logout()
     {
         await VivoxService.Instance.LogoutAsync();
     }
 
     public async void JoinChannel(string channelToJoin)
     {
+        Login();
         await VivoxService.Instance.JoinEchoChannelAsync(channelToJoin, ChatCapability.TextAndAudio);
         currentChannel = channelToJoin;
     }
     public async void LeaveChannel()
     {
-        if(currentChannel != string.Empty)
+        if (currentChannel != string.Empty)
         {
             await VivoxService.Instance.LeaveChannelAsync(currentChannel);
         }
+        Logout();
     }
 }
