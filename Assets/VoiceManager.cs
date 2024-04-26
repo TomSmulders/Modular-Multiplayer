@@ -20,20 +20,17 @@ public class VoiceManager : MonoBehaviour
 
     public string currentChannel;
 
-    private void Awake()
+    private void start()
     {
         if(instance == null) { instance = this; } else { Destroy(this); }
         InitializeAsync();
     }
     async void InitializeAsync()
     {
-        if (!VivoxService.Instance.IsLoggedIn)
-        {
-            await UnityServices.InitializeAsync();
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        await UnityServices.InitializeAsync();
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-            await VivoxService.Instance.InitializeAsync();
-        }
+        await VivoxService.Instance.InitializeAsync();
     }
 
     public async void Login()
