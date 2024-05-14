@@ -17,8 +17,6 @@ public class StartGameNetWork : NetworkBehaviour
         {
             Destroy(this);
         }
-
-        GetComponent<NetworkObject>().Spawn();
     }
 
 
