@@ -71,4 +71,6 @@ public class NetworkTransmittion : NetworkBehaviour
             GameNetworkManager.instance.Disconnect_Player();
         }
     }
+
+
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -45,6 +46,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+
     public void Show_Lobby_Search_Screen()
     {
         lobbySearchScreen.SetActive(true);
@@ -54,5 +56,10 @@ public class UIManager : MonoBehaviour
     {
         inLobbyScreen.SetActive(true);
         lobbySearchScreen.SetActive(false);
+    }
+
+    public void Start_Game()
+    {
+        SceneManager.LoadScene("PlayingField");
     }
 }

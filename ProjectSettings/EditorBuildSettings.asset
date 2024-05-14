@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DefaultScene Friends.unity
     guid: 83959c72fb2d3ec418dbc54c856c9efb
+  - enabled: 1
+    path: Assets/Scenes/PlayingField.unity
+    guid: a803e6e79e64a5344ae9593248cacdbf
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
