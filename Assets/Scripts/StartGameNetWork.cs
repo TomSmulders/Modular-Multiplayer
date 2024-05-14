@@ -57,7 +57,7 @@ public class StartGameNetWork : NetworkBehaviour
     [ClientRpc]
     public void DebugTextClientRPC(string text)
     {
-        //Debug.Log($"Received text from server: {text}");
+        Debug.Log($"Received text from server: {text}");
     }
 
     public void startGameTest()
