@@ -17,6 +17,8 @@ public class StartGameNetWork : NetworkBehaviour
         {
             Destroy(this);
         }
+
+        GetComponent<NetworkObject>().Spawn();
     }
 
 
@@ -60,7 +62,7 @@ public class StartGameNetWork : NetworkBehaviour
 
     public void startGameTest()
     {
-        GetComponent<NetworkObject>().Spawn();
+       
 
         IWantToDebugTextServerRPC("start game");
     }
