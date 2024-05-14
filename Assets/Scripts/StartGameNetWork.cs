@@ -24,15 +24,16 @@ public class StartGameNetWork : NetworkBehaviour
         }
     }
 
+    private void Start()
+    {
+        LoadDone_ServerRPC();
+    }
 
 
     private int loadedPlayers = 0;
-
-
     [ServerRpc(RequireOwnership = false)]
     public void LoadDone_ServerRPC()
     {
-  
         loadedPlayers++;
         if (loadedPlayers >= NetworkManager.Singleton.ConnectedClients.Count)
         {
