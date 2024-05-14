@@ -60,6 +60,11 @@ public class StartGameNetWork : NetworkBehaviour
 
     public void startGameTest()
     {
+        foreach (var item in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            Debug.Log(item);
+        }
+        Debug.Log(GameManager.instance.myClientID);
         IWantToDebugTextServerRPC("start game");
     }
 }
