@@ -55,16 +55,13 @@ public class StartGameNetWork : NetworkBehaviour
     [ClientRpc]
     public void DebugTextClientRPC(string text)
     {
-        Debug.Log($"Received text from server: {text}");
+        //Debug.Log($"Received text from server: {text}");
     }
 
     public void startGameTest()
     {
-        foreach (var item in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            Debug.Log(item);
-        }
-        Debug.Log(GameManager.instance.myClientID);
+        GetComponent<NetworkObject>().Spawn();
+
         IWantToDebugTextServerRPC("start game");
     }
 }
