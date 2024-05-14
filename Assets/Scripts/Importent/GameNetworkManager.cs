@@ -8,6 +8,7 @@ using Steamworks.Data;
 using UnityEngine.UI;
 using Netcode.Transports.Facepunch;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 public class GameNetworkManager : NetworkBehaviour
 {
@@ -350,7 +351,10 @@ public class GameNetworkManager : NetworkBehaviour
     }
 
 
-
+    public void Switch_scene(string sceneName)
+    {
+        NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+    }
 }
 
 

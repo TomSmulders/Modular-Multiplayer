@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 
 public class UIManager : MonoBehaviour
 {
@@ -58,8 +59,9 @@ public class UIManager : MonoBehaviour
         lobbySearchScreen.SetActive(false);
     }
 
+ 
     public void Start_Game()
     {
-        SceneManager.LoadScene("PlayingField");
+        GameNetworkManager.instance.Switch_scene("PlayingField");
     }
 }
