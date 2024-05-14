@@ -15,7 +15,7 @@ public class TestPlayerScript : MonoBehaviour
 
     void Update()
     {
-        if (!networkObj.IsOwner) return;
+        if (!networkObj.IsLocalPlayer) return;
 
         if (Input.GetKeyDown(KeyCode.Space))
         { 
