@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-
-
+using Steamworks;
 
 public class TestPlayerScript : NetworkBehaviour
 {
@@ -18,7 +17,7 @@ public class TestPlayerScript : NetworkBehaviour
         {
             float rnd = Random.Range(0.2f, 3);
             transform.localScale = new Vector3(rnd, rnd, rnd);
-            Debug.Log("changed scale for " + gameObject.name);
+            Debug.Log("changed scale for " + gameObject.name + " " + SteamClient.Name);
         }
     }
 }
