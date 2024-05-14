@@ -32,14 +32,14 @@ public class TestPlayerScript : NetworkBehaviour
     {
         transform.position += _movementInput;
 
-        MovePlayer_ServerRpc(_movementInput);
+        //MovePlayer_ServerRpc(_movementInput);
     }
-
-    [ServerRpc(RequireOwnership = true)]
+/*
+    [ServerRpc]
     void MovePlayer_ServerRpc(Vector3 _movementInput)
     {
         transform.position += _movementInput;
 
         Debug.Log("Moved " + gameObject.name + " to :  "+ transform.position + " by : " + SteamClient.Name);
-    }
+    }*/
 }
