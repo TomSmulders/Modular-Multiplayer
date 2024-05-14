@@ -31,7 +31,7 @@ public class StartGameNetWork : NetworkBehaviour
 
 
     private int loadedPlayers = 0;
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)] 
     public void LoadDone_ServerRPC()
     {
         loadedPlayers++;
@@ -43,6 +43,7 @@ public class StartGameNetWork : NetworkBehaviour
 
                 NetworkObject spawnedPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<NetworkObject>();
                 spawnedPlayer.SpawnWithOwnership(player.Key);
+                spawnedPlayer.SynchronizeTransform = true;
             }
         }
     }
