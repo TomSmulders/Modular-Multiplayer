@@ -33,7 +33,6 @@ public class GameNetworkManager : NetworkBehaviour
     private void Awake()
     {
         if (instance != null) { Destroy(this); } else { instance = this; }
-        DontDestroyOnLoad(transform);
     }
     private void Start()
     {
