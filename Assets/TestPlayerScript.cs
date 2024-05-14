@@ -15,15 +15,9 @@ public class TestPlayerScript : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && IsOwner)
         {
-            test_ClientRPC();
+            float rnd = Random.Range(0.2f, 3);
+            transform.localScale = new Vector3(rnd, rnd, rnd);
+            Debug.Log("changed scale for " + gameObject.name + " " + SteamClient.Name);
         }
-    }
-
-    [ClientRpc]
-    void test_ClientRPC()
-    {
-        float rnd = Random.Range(0.2f, 3);
-        transform.localScale = new Vector3(rnd, rnd, rnd);
-        Debug.Log("changed scale for " + gameObject.name + " " + SteamClient.Name);
     }
 }
