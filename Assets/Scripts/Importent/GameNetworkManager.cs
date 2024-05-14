@@ -28,11 +28,12 @@ public class GameNetworkManager : NetworkBehaviour
     public PlayerData me;
 
     #endregion
-
+    
     //Unity functions
     private void Awake()
     {
         if (instance != null) { Destroy(this); } else { instance = this; }
+        DontDestroyOnLoad(transform);
     }
     private void Start()
     {
@@ -41,6 +42,7 @@ public class GameNetworkManager : NetworkBehaviour
         SteamMatchmaking.OnLobbyMemberLeave += OnLobbyMemberLeave;
 
         SteamFriends.OnGameLobbyJoinRequested += SteamFriends_OnGameLobbyJoinRequested;
+        
     } 
     private void OnDestroy()
     {
