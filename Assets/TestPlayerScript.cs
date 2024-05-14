@@ -15,9 +15,9 @@ public class TestPlayerScript : MonoBehaviour
 
     void Update()
     {
-        if (!networkObj.IsLocalPlayer) return;
+        Debug.Log(networkObj.IsOwner);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && networkObj.IsOwner)
         { 
             float rnd = Random.Range(0.2f, 3);
             transform.localScale = new Vector3(rnd, rnd, rnd);
