@@ -15,7 +15,7 @@ public class TestPlayerScript : MonoBehaviour
         {
             float rnd = Random.Range(0.2f, 3);
             transform.localScale = new Vector3(rnd, rnd, rnd);
+            Debug.Log("changed scale for " + gameObject.name);
         }
-        Debug.Log("changed scale for " + gameObject.name);
     }
 }
