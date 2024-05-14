@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -6,6 +7,10 @@ using UnityEngine;
 public class StartGameNetWork : NetworkBehaviour
 {
     public static StartGameNetWork instance;
+    [SerializeField]
+    GameObject playerPrefab;
+
+
 
     private void Awake()
     {
@@ -20,28 +25,31 @@ public class StartGameNetWork : NetworkBehaviour
     }
 
 
+
     private int loadedPlayers = 0;
 
 
     [ServerRpc(RequireOwnership = false)]
     public void LoadDone_ServerRPC()
     {
-        Debug.Log("test");
-        //LoadDone_ClientRpc();
+  
         loadedPlayers++;
-        //if (loadedPlayers >= NetworkManager.Singleton.ConnectedClients.Count)
-        //{
-        //    foreach (var player in NetworkManager.Singleton.ConnectedClients)
-        //    {
-                
-        //    }
-        //}
+        if (loadedPlayers >= NetworkManager.Singleton.ConnectedClients.Count)
+        {
+            foreach (var player in NetworkManager.Singleton.ConnectedClients)
+            {
+                LoadDone_ClientRpc();
+
+                NetworkObject spawnedPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<NetworkObject>();
+                spawnedPlayer.SpawnWithOwnership(player.Key);
+            }
+        }
     }
 
     [ClientRpc]
     public void LoadDone_ClientRpc()
     {
-        Debug.Log("test");
+        Debug.Log("SpawnPlayer");
     }
 
 
