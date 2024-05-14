@@ -7,6 +7,8 @@ using Steamworks;
 public class TestPlayerScript : NetworkBehaviour
 {
 
+    [SerializeField] float speed = 50;
+
     void Start()
     {
         transform.position += new Vector3(Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10));
@@ -14,17 +16,22 @@ public class TestPlayerScript : NetworkBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && IsOwner)
+        if (!IsOwner) { return; }
+
+        Vector3 movementInput = new Vector3(Input.GetAxis("Horizontal"),0, Input.GetAxis("Vertical"));
+        movementInput *= speed * Time.deltaTime;
+
+        if(Mathf.Abs(movementInput.x) + Mathf.Abs(movementInput.z) > 0)
         {
-            onSpace_ServerRpc();
+            MovePlayer_ServerRpc(movementInput);
         }
     }
 
     [ServerRpc(RequireOwnership = true)]
-    void onSpace_ServerRpc()
+    void MovePlayer_ServerRpc(Vector3 _movementInput)
     {
-        float rnd = Random.Range(0.2f, 3);
-        transform.localScale = new Vector3(rnd, rnd, rnd);
-        Debug.Log("changed scale for " + gameObject.name + " " + SteamClient.Name);
+        transform.position += _movementInput;
+
+        Debug.Log("Moved " + gameObject.name + " to :  "+ transform.position + " by : " + SteamClient.Name);
     }
 }
