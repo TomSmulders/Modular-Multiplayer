@@ -43,7 +43,6 @@ public class StartGameNetWork : NetworkBehaviour
 
                 NetworkObject spawnedPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<NetworkObject>();
                 spawnedPlayer.SpawnWithOwnership(player.Key);
-                spawnedPlayer.SynchronizeTransform = true;
             }
         }
     }
