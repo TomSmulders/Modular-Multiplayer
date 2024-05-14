@@ -39,19 +39,18 @@ public class StartGameNetWork : NetworkBehaviour
         {
             foreach (var player in NetworkManager.Singleton.ConnectedClients)
             {
-                LoadDone_ClientRpc(player.Key);
+                LoadDone_ServerRpc(player.Key);
+
+                NetworkObject spawnedPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<NetworkObject>();
+                spawnedPlayer.SpawnWithOwnership(player.Key);
             }
         }
     }
 
-    [ClientRpc]
-    public void LoadDone_ClientRpc(ulong _clientId)
+    [ServerRpc]
+    public void LoadDone_ServerRpc(ulong _clientId)
     {
-        if(NetworkManager.LocalClientId == _clientId)
-        {
-            NetworkObject spawnedPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<NetworkObject>();
-            spawnedPlayer.SpawnWithOwnership(_clientId);
-        }
+        Debug.Log("SpawnPlayer");
     }
 
 

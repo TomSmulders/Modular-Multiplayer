@@ -23,23 +23,15 @@ public class TestPlayerScript : NetworkBehaviour
 
         if(Mathf.Abs(movementInput.x) + Mathf.Abs(movementInput.z) > 0)
         {
-            MovePlayer_ClientRpc(movementInput);
+            MovePlayer_ServerRpc(movementInput);
         }
     }
 
-    [ClientRpc]
-    void MovePlayer_ClientRpc(Vector3 _movementInput)
-    {
-        transform.position += _movementInput;
-
-        //MovePlayer_ServerRpc(_movementInput);
-    }
-/*
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = true)]
     void MovePlayer_ServerRpc(Vector3 _movementInput)
     {
         transform.position += _movementInput;
 
         Debug.Log("Moved " + gameObject.name + " to :  "+ transform.position + " by : " + SteamClient.Name);
-    }*/
+    }
 }
