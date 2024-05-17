@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using Netcode.Transports.Facepunch;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 
 public class ModularChatManager : NetworkBehaviour
 {
@@ -108,6 +109,10 @@ public class ModularChatManager : NetworkBehaviour
     
     public void CreateGlobalChat(List<ulong> _users)
     {
+        foreach (var item in _users)
+        {
+            Debug.Log(item);
+        }
         I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), defaultGlobalChatColor, ChatType.Global, "Global");
     }
 
@@ -129,11 +134,9 @@ public class ModularChatManager : NetworkBehaviour
 
 
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void I_Want_To_Create_A_Chat_ServerRpc(string _usersInChatString, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
     {
-        List<ulong> _usersInChat = DeserializeJsonToList(_usersInChatString);
-
         int _lobbyChatAmmount = 0;
         if (int.TryParse(GameNetworkManager.instance.currentLobby.Value.GetData("lobbyChatAmmount"), out _lobbyChatAmmount))
         {
@@ -145,23 +148,30 @@ public class ModularChatManager : NetworkBehaviour
         }
         GameNetworkManager.instance.currentLobby.Value.SetData("lobbyChatAmmount", _lobbyChatAmmount.ToString());
 
+        CreateChat_ClientRpc(_usersInChatString, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
+    }
+
+    [ClientRpc]
+    void CreateChat_ClientRpc(string _usersInChatString, UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
+    {
+        List<ulong> _usersInChat = DeserializeJsonToList(_usersInChatString);
+
+        Debug.Log(NetworkManager.LocalClientId);
+        foreach (var item in _usersInChat)
+        {
+            Debug.Log(item);
+        }
 
         if (_usersInChat.Contains(NetworkManager.LocalClientId))
         {
-            if(_chatType == ChatType.Personal)
+            if (_chatType == ChatType.Personal)
             {
                 string[] usernames = _chatName.Split(',');
                 _chatName = NetworkManager.LocalClientId == _usersInChat[0] ? usernames[1] : usernames[0];
             }
-            CreateChat_ClientRpc(_usersInChatString, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
+            ChatSettings chat = new ChatSettings(_chatName, _chatId, _chatColor, _chatType, DeserializeJsonToList(_usersInChat), commandPrefix);
+            Debug.Log("I created a chat");
         }
-    }
-
-    [ClientRpc]
-    void CreateChat_ClientRpc(string _usersInChat , UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
-    {
-        ChatSettings chat = new ChatSettings(_chatName,_chatId, _chatColor, _chatType, DeserializeJsonToList(_usersInChat), commandPrefix);
-        Debug.Log("I created a chat");
     }
 
 
