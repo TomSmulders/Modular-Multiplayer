@@ -39,11 +39,18 @@ public class ModularChatManager : NetworkBehaviour
 
     public GameObject messagePrefab;
 
+    private void Awake()
+    {
+        if (GlobalGameSettings.instance.currentLobby.HasValue)
+        {
+            currentLobby = GlobalGameSettings.instance.currentLobby.Value;
+        }
+    }
+
     private void Start()
     {
         //roep het voorbeeld command
-        RunCommand("/kick kyan");
-
+        //RunCommand("/kick kyan");
     }
 
     //voorbeeld command

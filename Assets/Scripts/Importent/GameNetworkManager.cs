@@ -62,11 +62,11 @@ public class GameNetworkManager : NetworkBehaviour
 
         PlayersUIManager.instance.Is_Host(NetworkManager.Singleton.IsHost);
 
-        Update_Players(_lobby.Members);
+        Update_Lobby(_lobby.Members);
     }
     private void OnLobbyMemberJoined(Lobby _lobby, Friend _user)
     {
-        Update_Players(_lobby.Members);
+        Update_Lobby(_lobby.Members);
     }
     private void OnLobbyMemberLeave(Lobby _lobby, Friend _user)
     {
@@ -74,7 +74,7 @@ public class GameNetworkManager : NetworkBehaviour
         {
             Disconnect_Player();
         }
-        Update_Players(_lobby.Members);
+        Update_Lobby(_lobby.Members);
     }
 
     private void Singleton_OnClientConnectedCallback(ulong clientId)
@@ -101,7 +101,7 @@ public class GameNetworkManager : NetworkBehaviour
         else
         {
             currentLobby = _lobby;
-            Update_Players(_lobby.Members);
+            Update_Lobby(_lobby.Members);
             UIManager.instance.Show_In_Lobby_Screen();
         }
     }
@@ -121,6 +121,8 @@ public class GameNetworkManager : NetworkBehaviour
 
         currentLobby = await SteamMatchmaking.CreateLobbyAsync(_maxPlayers);
         currentLobby.Value.SetData("LobbyOwner", currentLobby.Value.Owner.Id.ToString());
+
+        GlobalGameSettings.instance.currentLobby = currentLobby;
 
         Set_Lobby_PublicityMode(_lobbyMode);
         Setup_Lobby();
@@ -182,7 +184,8 @@ public class GameNetworkManager : NetworkBehaviour
                             else
                             {
                                 currentLobby = _lobby;
-                                Update_Players(_lobby.Members);
+
+                                Update_Lobby(_lobby.Members);
                                 UIManager.instance.Show_In_Lobby_Screen();
                             }
                         }
@@ -228,8 +231,10 @@ public class GameNetworkManager : NetworkBehaviour
 
 
     //Party related
-    public void Update_Players(IEnumerable<Friend> _memberIEnumerable)
+    public void Update_Lobby(IEnumerable<Friend> _memberIEnumerable)
     {
+        GlobalGameSettings.instance.currentLobby = currentLobby;
+
         Update_If_Players_Ready(partyReady);
 
         Friend[] members = _memberIEnumerable.ToArray();
@@ -320,6 +325,8 @@ public class GameNetworkManager : NetworkBehaviour
 
         NetworkManager.Singleton.Shutdown(true);
         Debug.Log("Disconnected");
+
+        GlobalGameSettings.instance.currentLobby = currentLobby;
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
