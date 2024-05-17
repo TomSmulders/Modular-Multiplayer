@@ -133,10 +133,18 @@ public class ModularChatManager : NetworkBehaviour
     private string SerializeList(List<ulong> ulongList)  
     {
         string stringlist = "";
-        foreach (var item in ulongList)
+        for (int i = 0; i < ulongList.Count; i++)
         {
-            stringlist += item.ToString() + ",";
+            if(i < ulongList.Count - 1)
+            {
+                stringlist += ulongList[i].ToString() + ",";
+            }
+            else
+            {
+                stringlist += ulongList[i].ToString();
+            }
         }
+
         return stringlist;
     }
 
