@@ -96,7 +96,6 @@ public class ModularChatManager : NetworkBehaviour
             Debug.Log("Trying to create chat");
             if (currentLobby.HasValue)
             {
-                Debug.Log("");
                 CreateGlobalChat(NetworkManager.ConnectedClientsIds.ToList());
             }
             else
@@ -109,11 +108,6 @@ public class ModularChatManager : NetworkBehaviour
     
     public void CreateGlobalChat(List<ulong> _users)
     {
-
-        foreach (var item in _users)
-        {
-            Debug.Log(item);
-        }
         I_Want_To_Create_A_Chat_ServerRpc(SerializeList(_users), defaultGlobalChatColor, ChatType.Global, "Global");
     }
 
@@ -168,7 +162,8 @@ public class ModularChatManager : NetworkBehaviour
     {
         List<ulong> _usersInChat = DeserializeList(_usersInChatBytes);
 
-        Debug.Log(NetworkManager.LocalClientId);
+        //Debug.Log(NetworkManager.LocalClientId);
+        Debug.Log("length : " + _usersInChat);
         foreach (var item in _usersInChat)
         {
             Debug.Log(item);
