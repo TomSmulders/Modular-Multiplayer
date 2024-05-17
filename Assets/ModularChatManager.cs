@@ -130,9 +130,11 @@ public class ModularChatManager : NetworkBehaviour
     public void CreateCombinedChat() { }
 
 
-    private string SerializeList(List<ulong> ulongList)
+    private string SerializeList(List<ulong> ulongList)  
     {
-        return JsonUtility.ToJson(ulongList);
+        string json = JsonUtility.ToJson(ulongList);
+        Debug.Log("Serialized JSON: " + json); // Debugging
+        return json;
     }
 
     private List<ulong> DeserializeList(string jsonString)
@@ -163,7 +165,7 @@ public class ModularChatManager : NetworkBehaviour
     {
         Debug.Log("Received usersInChatJson: " + _usersInChatJson); // Debugging
 
-        List<ulong> _usersInChat = DeserializeList(_usersInChatJson);
+        List<ulong> _usersInChat = DeserializeList(_usersInChatJson); 
 
         Debug.Log("Length of usersInChat: " + _usersInChat.Count); // Debugging
 
