@@ -109,6 +109,7 @@ public class ModularChatManager : NetworkBehaviour
     public void CreateGlobalChat(List<ulong> _users)
     {
         Debug.Log("length : " + _users.Count);
+        Debug.Log("serialized : " + SerializeList(_users));
         I_Want_To_Create_A_Chat_ServerRpc(SerializeList(_users), defaultGlobalChatColor, ChatType.Global, "Global");
     }
 
@@ -129,14 +130,14 @@ public class ModularChatManager : NetworkBehaviour
     public void CreateCombinedChat() { }
 
 
-    private string SerializeList<T>(List<T> ulongList) 
+    private string SerializeList(List<ulong> ulongList)
     {
         return JsonUtility.ToJson(ulongList);
     }
 
-    private List<T> DeserializeList<T>(string jsonString)
+    private List<ulong> DeserializeList(string jsonString)
     {
-        return JsonUtility.FromJson<List<T>>(jsonString);
+        return JsonUtility.FromJson<List<ulong>>(jsonString);
     }
 
 
@@ -162,7 +163,7 @@ public class ModularChatManager : NetworkBehaviour
     {
         Debug.Log("Received usersInChatJson: " + _usersInChatJson); // Debugging
 
-        List<ulong> _usersInChat = DeserializeList<ulong>(_usersInChatJson);
+        List<ulong> _usersInChat = DeserializeList(_usersInChatJson);
 
         Debug.Log("Length of usersInChat: " + _usersInChat.Count); // Debugging
 
