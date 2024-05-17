@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -109,23 +110,19 @@ public class ModularChatManager : NetworkBehaviour
     
     public void CreateGlobalChat(List<ulong> _users)
     {
-        foreach (var item in _users)
-        {
-            Debug.Log(item);
-        }
-        I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), defaultGlobalChatColor, ChatType.Global, "Global");
+        I_Want_To_Create_A_Chat_ServerRpc(new NetworkList<ulong>(_users), defaultGlobalChatColor, ChatType.Global, "Global");
     }
 
     public void CreatePersonalChat(ulong _otherUser , string _otherUsername)
     {
         List<ulong> _users = new List<ulong>(){ _otherUser, NetworkManager.Singleton.LocalClientId };
         string _chatName = _otherUsername + ',' + username;
-        I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), defaultPersonalChatColor, ChatType.Personal , _chatName);
+        I_Want_To_Create_A_Chat_ServerRpc(new NetworkList<ulong>(_users), defaultPersonalChatColor, ChatType.Personal , _chatName);
     }
 
     public void CreateTeamChat(List<ulong> _users, UnityEngine.Color _teamColor , string _teamName)
     {
-        I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), _teamColor, ChatType.Team , _teamName);
+        I_Want_To_Create_A_Chat_ServerRpc(new NetworkList<ulong>(_users), _teamColor, ChatType.Team , _teamName);
     }
 
 
@@ -135,7 +132,7 @@ public class ModularChatManager : NetworkBehaviour
 
 
     [ServerRpc(RequireOwnership = false)]
-    public void I_Want_To_Create_A_Chat_ServerRpc(string _usersInChatString, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
+    public void I_Want_To_Create_A_Chat_ServerRpc(NetworkList<ulong> _usersInChat, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
     {
         int _lobbyChatAmmount = 0;
         if (int.TryParse(GameNetworkManager.instance.currentLobby.Value.GetData("lobbyChatAmmount"), out _lobbyChatAmmount))
@@ -148,13 +145,17 @@ public class ModularChatManager : NetworkBehaviour
         }
         GameNetworkManager.instance.currentLobby.Value.SetData("lobbyChatAmmount", _lobbyChatAmmount.ToString());
 
-        CreateChat_ClientRpc(_usersInChatString, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
+        CreateChat_ClientRpc(_usersInChat, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
     }
 
     [ClientRpc]
-    void CreateChat_ClientRpc(string _usersInChatString, UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
+    void CreateChat_ClientRpc(NetworkList<ulong> _usersInChatNetwork, UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
     {
-        List<ulong> _usersInChat = DeserializeJsonToList(_usersInChatString);
+        List<ulong> _usersInChat = new List<ulong>(_usersInChatNetwork.Count);
+        for (int i = 0; i < _usersInChatNetwork.Count; i++)
+        {
+            _usersInChat.Add(_usersInChatNetwork[i]);
+        }
 
         Debug.Log(NetworkManager.LocalClientId);
         Debug.Log(_usersInChat.Count);
