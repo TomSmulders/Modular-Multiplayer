@@ -128,20 +128,19 @@ public class ModularChatManager : NetworkBehaviour
     public void CreateCombinedChat() { }
 
 
-    private byte[] SerializeList(List<ulong> ulongList)
+    private string SerializeList<T>(List<T> ulongList)
     {
-        string json = JsonUtility.ToJson(ulongList);
-        return System.Text.Encoding.UTF8.GetBytes(json);
+        return JsonUtility.ToJson(ulongList);
     }
-    private List<ulong> DeserializeList(byte[] serializedList)
+
+    private List<T> DeserializeList<T>(string jsonString)
     {
-        string json = System.Text.Encoding.UTF8.GetString(serializedList);
-        return JsonUtility.FromJson<List<ulong>>(json);
+        return JsonUtility.FromJson<List<T>>(jsonString);
     }
 
 
     [ServerRpc(RequireOwnership = false)]
-    public void I_Want_To_Create_A_Chat_ServerRpc(byte[] _usersInChatBytes, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
+    public void I_Want_To_Create_A_Chat_ServerRpc(string _usersInChatSerialized, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
     {
         int _lobbyChatAmmount = 0;
         if (int.TryParse(GameNetworkManager.instance.currentLobby.Value.GetData("lobbyChatAmmount"), out _lobbyChatAmmount))
@@ -154,13 +153,13 @@ public class ModularChatManager : NetworkBehaviour
         }
         GameNetworkManager.instance.currentLobby.Value.SetData("lobbyChatAmmount", _lobbyChatAmmount.ToString());
 
-        CreateChat_ClientRpc(_usersInChatBytes, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
+        CreateChat_ClientRpc(_usersInChatSerialized, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
     }
 
     [ClientRpc]
-    void CreateChat_ClientRpc(byte[] _usersInChatBytes, UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
+    void CreateChat_ClientRpc(string _usersInChatSerialized, UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
     {
-        List<ulong> _usersInChat = DeserializeList(_usersInChatBytes);
+        List<ulong> _usersInChat = DeserializeList<ulong>(_usersInChatSerialized);
 
         //Debug.Log(NetworkManager.LocalClientId);
         Debug.Log("length : " + _usersInChat.Count);
