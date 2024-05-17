@@ -169,7 +169,7 @@ public class ModularChatManager : NetworkBehaviour
                 string[] usernames = _chatName.Split(',');
                 _chatName = NetworkManager.LocalClientId == _usersInChat[0] ? usernames[1] : usernames[0];
             }
-            ChatSettings chat = new ChatSettings(_chatName, _chatId, _chatColor, _chatType, DeserializeJsonToList(_usersInChat), commandPrefix);
+            ChatSettings chat = new ChatSettings(_chatName, _chatId, _chatColor, _chatType, _usersInChat, commandPrefix);
             Debug.Log("I created a chat");
         }
     }
