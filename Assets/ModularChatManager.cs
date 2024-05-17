@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using Steamworks;
+using Steamworks.Data;
 using UnityEngine.UI;
 using Netcode.Transports.Facepunch;
 using System.Linq;
@@ -14,9 +15,9 @@ public class ModularChatManager : NetworkBehaviour
 {
     public bool useSteamUsername = true;
     public string username = "user";
-    public Color myUsernameColor = Color.white;
-    public Color defaultUserChatColor = Color.white;
-    public Color defaultPersonalChatColor = Color.gray;
+    public UnityEngine.Color myUsernameColor = UnityEngine.Color.white;
+    public UnityEngine.Color defaultGlobalChatColor = UnityEngine.Color.white;
+    public UnityEngine.Color defaultPersonalChatColor = UnityEngine.Color.gray;
 
     public List<ulong> accesIds = new List<ulong>();
 
@@ -27,18 +28,22 @@ public class ModularChatManager : NetworkBehaviour
 
     public string commandPrefix;
 
+    public Lobby? currentLobby;
+
+    public List<ChatSettings> chats = new List<ChatSettings>();
 
     public List<ChatCommand> globalChatCommands = new List<ChatCommand>();
     public List<ChatCommand> personalChatCommands = new List<ChatCommand>();
     public List<ChatCommand> teamChatCommands = new List<ChatCommand>();
     public List<ChatCommand> allChatsCommands = new List<ChatCommand>();
 
-
+    public GameObject messagePrefab;
 
     private void Start()
     {
         //roep het voorbeeld command
         RunCommand("/kick kyan");
+
     }
 
     //voorbeeld command
@@ -50,20 +55,21 @@ public class ModularChatManager : NetworkBehaviour
         //logica om hun te kicken
     }
 
-    public void teleport(ChatCommand command)
-    {
-        ChatCommandVariable username = command.GetVariableByName("username");
-        ChatCommandVariable position = command.GetVariableByName("position");
 
-        Debug.Log("I teleported " + username.variableValue + " to " + position.variableValue);
+    public void SetUserNickname(string _n){ username = _n;  }
+    public void SetUserNicknameColor(UnityEngine.Color _c){ myUsernameColor = _c;  }
+    public void SetUserChatColor(UnityEngine.Color _c){ defaultGlobalChatColor = _c;  }
+
+    public void Connect_Chat(Lobby _lobby)
+    {
+        currentLobby = _lobby;
     }
 
 
+    public void SendMessage()
+    {
 
-
-    public void SetUserNickname(string _n){ username = _n;  }
-    public void SetUserNicknameColor(Color _c){ myUsernameColor = _c;  }
-    public void SetUserChatColor(Color _c){ defaultUserChatColor = _c;  }
+    }
 
 
     public void ReceiveChat() { }
@@ -74,9 +80,28 @@ public class ModularChatManager : NetworkBehaviour
     //personal = name1 -> me : message
     //team = {teamColor} name : message
 
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.G) && IsHost)
+        {
+            Debug.Log("Trying to create chat");
+            if (currentLobby.HasValue)
+            {
+                Debug.Log("");
+                CreateGlobalChat(NetworkManager.ConnectedClientsIds.ToList());
+            }
+            else
+            {
+                Debug.Log("You are not connected to a lobby, Please call ModularChatManager.Connect_Chat(Lobby);");
+            }
+
+        }
+    }
+    
     public void CreateGlobalChat(List<ulong> _users)
     {
-        I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), defaultUserChatColor, ChatType.Global, "Global");
+        I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), defaultGlobalChatColor, ChatType.Global, "Global");
     }
 
     public void CreatePersonalChat(ulong _otherUser , string _otherUsername)
@@ -86,7 +111,7 @@ public class ModularChatManager : NetworkBehaviour
         I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), defaultPersonalChatColor, ChatType.Personal , _chatName);
     }
 
-    public void CreateTeamChat(List<ulong> _users, Color _teamColor , string _teamName)
+    public void CreateTeamChat(List<ulong> _users, UnityEngine.Color _teamColor , string _teamName)
     {
         I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), _teamColor, ChatType.Team , _teamName);
     }
@@ -98,7 +123,7 @@ public class ModularChatManager : NetworkBehaviour
 
 
     [ServerRpc]
-    public void I_Want_To_Create_A_Chat_ServerRpc(string _usersInChatString, Color _chatColor , ChatType _chatType , string _chatName)
+    public void I_Want_To_Create_A_Chat_ServerRpc(string _usersInChatString, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
     {
         List<ulong> _usersInChat = DeserializeJsonToList(_usersInChatString);
 
@@ -126,9 +151,10 @@ public class ModularChatManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void CreateChat_ClientRpc(string _usersInChat , Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
+    void CreateChat_ClientRpc(string _usersInChat , UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
     {
         ChatSettings chat = new ChatSettings(_chatName,_chatId, _chatColor, _chatType, DeserializeJsonToList(_usersInChat), commandPrefix);
+        Debug.Log("I created a chat");
     }
 
 
@@ -233,9 +259,10 @@ public class ModularChatManager : NetworkBehaviour
 public enum ChatType { Global, Personal, Team, Combined };
 
 
-public class ChatSettings : MonoBehaviour
+[System.Serializable]
+public class ChatSettings
 {
-    public ChatSettings(string _n , int _id, Color _c, ChatType _t, List<ulong> _u, string _p)
+    public ChatSettings(string _n , int _id, UnityEngine.Color _c, ChatType _t, List<ulong> _u, string _p)
     {
         this.chatName = _n;
         this.chatId = _id;
@@ -247,7 +274,7 @@ public class ChatSettings : MonoBehaviour
 
     public string chatName;
     public int chatId;
-    public Color chatColor;
+    public UnityEngine.Color chatColor;
 
     public ChatType chatType;
 
