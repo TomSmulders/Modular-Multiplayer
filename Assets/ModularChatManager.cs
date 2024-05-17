@@ -130,16 +130,45 @@ public class ModularChatManager : NetworkBehaviour
     public void CreateCombinedChat() { }
 
 
-    private string SerializeList(List<ulong> ulongList)  
+    private string SerializeList(List<ulong> ulongList)
     {
-        string json = JsonUtility.ToJson(ulongList);
+        // Convert the list into a serializable format
+        List<object> serializableList = new List<object>();
+        foreach (var item in ulongList)
+        {
+            serializableList.Add(item);
+        }
+
+        // Serialize the serializable list to JSON
+        string json = JsonUtility.ToJson(serializableList);
         Debug.Log("Serialized JSON: " + json); // Debugging
+
         return json;
     }
-
     private List<ulong> DeserializeList(string jsonString)
     {
-        return JsonUtility.FromJson<List<ulong>>(jsonString);
+        // Deserialize the JSON string into a list of objects
+        List<object> serializableList = JsonUtility.FromJson<List<object>>(jsonString);
+
+        // Reconstruct the ulong list from the serializable list
+        List<ulong> ulongList = new List<ulong>(); 
+        foreach (var item in serializableList)
+        {
+            if (item is double)
+            {
+                ulongList.Add((ulong)(double)item); // Convert double to ulong
+            }
+            else if (item is long)
+            {
+                ulongList.Add((ulong)(long)item); // Convert long to ulong
+            }
+            else
+            {
+                Debug.LogWarning("Unexpected data type encountered during deserialization.");
+            }
+        }
+
+        return ulongList;
     }
 
 
