@@ -157,6 +157,7 @@ public class ModularChatManager : NetworkBehaviour
         List<ulong> _usersInChat = DeserializeJsonToList(_usersInChatString);
 
         Debug.Log(NetworkManager.LocalClientId);
+        Debug.Log(_usersInChat.Count);
         foreach (var item in _usersInChat)
         {
             Debug.Log(item);
