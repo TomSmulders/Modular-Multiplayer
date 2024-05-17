@@ -163,7 +163,7 @@ public class ModularChatManager : NetworkBehaviour
         List<ulong> _usersInChat = DeserializeList(_usersInChatBytes);
 
         //Debug.Log(NetworkManager.LocalClientId);
-        Debug.Log("length : " + _usersInChat);
+        Debug.Log("length : " + _usersInChat.Count);
         foreach (var item in _usersInChat)
         {
             Debug.Log(item);
