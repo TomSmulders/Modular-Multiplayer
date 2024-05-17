@@ -8,28 +8,24 @@ using TMPro;
 
 public class LobbyData : MonoBehaviour
 {   
-    //data 
-    //public SteamId lobbyid;
+    //data
     public Lobby lobbyId;
     public string LobbyName;
     public TextMeshProUGUI lobbyNameText;
 
-    
-
-    public void UpdateLobbyData()
+    public void Update_Lobby_Data()
     { 
         if (LobbyName == "")
         {
-                lobbyNameText.text = "Empty";
+            lobbyNameText.text = "Empty";
         }
         else
         {
             lobbyNameText.text = LobbyName;
         }
     }
-
-    public void JoinLobby()
+    public void Join_Lobby()
     {
-        //GameNetworkManager.instance.PublicLobby_JoinRequested(lobbyId);
+        GameNetworkManager.instance.Join_Public_Lobby(lobbyId);
     }
 }

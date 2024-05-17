@@ -23,7 +23,7 @@ public class NetworkUIManager : MonoBehaviour
         });
         hostButton.onClick.AddListener(() =>
         {
-            GameNetworkManager.instance.StartHost(6 , GameNetworkManager.LobbyMode.Public);
+            GameNetworkManager.instance.Start_Host(6 , GameNetworkManager.LobbyPublicityMode.Public);
         });
     }
 }
