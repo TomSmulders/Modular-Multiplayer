@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -110,19 +109,24 @@ public class ModularChatManager : NetworkBehaviour
     
     public void CreateGlobalChat(List<ulong> _users)
     {
-        I_Want_To_Create_A_Chat_ServerRpc(new NetworkList<ulong>(_users), defaultGlobalChatColor, ChatType.Global, "Global");
+
+        foreach (var item in _users)
+        {
+            Debug.Log(item);
+        }
+        I_Want_To_Create_A_Chat_ServerRpc(SerializeList(_users), defaultGlobalChatColor, ChatType.Global, "Global");
     }
 
     public void CreatePersonalChat(ulong _otherUser , string _otherUsername)
     {
         List<ulong> _users = new List<ulong>(){ _otherUser, NetworkManager.Singleton.LocalClientId };
         string _chatName = _otherUsername + ',' + username;
-        I_Want_To_Create_A_Chat_ServerRpc(new NetworkList<ulong>(_users), defaultPersonalChatColor, ChatType.Personal , _chatName);
+        I_Want_To_Create_A_Chat_ServerRpc(SerializeList(_users), defaultPersonalChatColor, ChatType.Personal , _chatName);
     }
 
     public void CreateTeamChat(List<ulong> _users, UnityEngine.Color _teamColor , string _teamName)
     {
-        I_Want_To_Create_A_Chat_ServerRpc(new NetworkList<ulong>(_users), _teamColor, ChatType.Team , _teamName);
+        I_Want_To_Create_A_Chat_ServerRpc(SerializeList(_users), _teamColor, ChatType.Team , _teamName);
     }
 
 
@@ -130,9 +134,20 @@ public class ModularChatManager : NetworkBehaviour
     public void CreateCombinedChat() { }
 
 
+    private byte[] SerializeList(List<ulong> ulongList)
+    {
+        string json = JsonUtility.ToJson(ulongList);
+        return System.Text.Encoding.UTF8.GetBytes(json);
+    }
+    private List<ulong> DeserializeList(byte[] serializedList)
+    {
+        string json = System.Text.Encoding.UTF8.GetString(serializedList);
+        return JsonUtility.FromJson<List<ulong>>(json);
+    }
+
 
     [ServerRpc(RequireOwnership = false)]
-    public void I_Want_To_Create_A_Chat_ServerRpc(NetworkList<ulong> _usersInChat, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
+    public void I_Want_To_Create_A_Chat_ServerRpc(byte[] _usersInChatBytes, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
     {
         int _lobbyChatAmmount = 0;
         if (int.TryParse(GameNetworkManager.instance.currentLobby.Value.GetData("lobbyChatAmmount"), out _lobbyChatAmmount))
@@ -145,20 +160,15 @@ public class ModularChatManager : NetworkBehaviour
         }
         GameNetworkManager.instance.currentLobby.Value.SetData("lobbyChatAmmount", _lobbyChatAmmount.ToString());
 
-        CreateChat_ClientRpc(_usersInChat, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
+        CreateChat_ClientRpc(_usersInChatBytes, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
     }
 
     [ClientRpc]
-    void CreateChat_ClientRpc(NetworkList<ulong> _usersInChatNetwork, UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
+    void CreateChat_ClientRpc(byte[] _usersInChatBytes, UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
     {
-        List<ulong> _usersInChat = new List<ulong>(_usersInChatNetwork.Count);
-        for (int i = 0; i < _usersInChatNetwork.Count; i++)
-        {
-            _usersInChat.Add(_usersInChatNetwork[i]);
-        }
+        List<ulong> _usersInChat = DeserializeList(_usersInChatBytes);
 
         Debug.Log(NetworkManager.LocalClientId);
-        Debug.Log(_usersInChat.Count);
         foreach (var item in _usersInChat)
         {
             Debug.Log(item);
@@ -174,40 +184,6 @@ public class ModularChatManager : NetworkBehaviour
             ChatSettings chat = new ChatSettings(_chatName, _chatId, _chatColor, _chatType, _usersInChat, commandPrefix);
             Debug.Log("I created a chat");
         }
-    }
-
-
-
-    private string SerializeListToJson(List<ulong> list)
-    {
-        List<string> stringList = new List<string>();
-        foreach (ulong value in list)
-        {
-            stringList.Add(value.ToString());
-        }
-
-        string jsonString = JsonUtility.ToJson(stringList);
-        return jsonString;
-    }
-    private List<ulong> DeserializeJsonToList(string jsonString)
-    {
-        List<string> stringList = JsonUtility.FromJson<List<string>>(jsonString);
-
-        List<ulong> ulongList = new List<ulong>();
-        foreach (string str in stringList)
-        {
-            ulong value;
-            if (ulong.TryParse(str, out value))
-            {
-                ulongList.Add(value);
-            }
-            else
-            {
-                Debug.LogError("Failed to parse ulong value from string: " + str);
-            }
-        }
-
-        return ulongList;
     }
 
     public void RunCommand(string commandText)
