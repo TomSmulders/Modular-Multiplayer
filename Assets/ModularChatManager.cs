@@ -259,6 +259,7 @@ public class ModularChatManager : NetworkBehaviour
 
             chat.chatGameObject = Instantiate(chatboxPrefab);
             chat.chatGameObject.transform.SetParent(chatboxParent.transform);
+            chat.chatGameObject.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             chat.chatGameObject.name = chat.chatName;
 
             chat.chatCommands.AddRange(allChatsCommands);
