@@ -11,7 +11,7 @@ public class MessageScript : MonoBehaviour
 
     TextMeshProUGUI tmpro;
 
-    public MessageScript(string _s, string _t, Color _c)
+    public void Init(string _s, string _t, Color _c)
     {
         this.sender = _s;
         this.content = _t;

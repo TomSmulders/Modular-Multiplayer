@@ -381,6 +381,9 @@ public class ChatSettings
     public ChatType chatType;
 
     public List<ulong> chatUsers = new List<ulong>();
+    public List<string> MessageHistory = new List<string>();
+    public List<MessageScript> MessageData = new List<MessageScript>();
+
     public Dictionary<string, GameObject> chatHistory = new Dictionary<string, GameObject>();
 
     public string chatCommandPrefix; // <-- character before the command (like --> /tp)
@@ -392,15 +395,20 @@ public class ChatSettings
         {
             GameObject newMessage = GameObject.Instantiate(ModularChatManager.instance.messagePrefab);
             newMessage.transform.SetParent(this.chatGameObject.transform);
+
             MessageScript messageScript = newMessage.GetComponent<MessageScript>();
+
             if (_color.HasValue)
             {
-                messageScript = new MessageScript(_sender, _message, _color.Value);
+                messageScript.Init(_sender, _message, _color.Value);
             }
             else
             {
-                messageScript = new MessageScript(_sender, _message, chatColor);
+                messageScript.Init(_sender, _message, chatColor);
             }
+
+            MessageHistory.Add(_sender + " : " + _message);
+            MessageData.Add(messageScript);
         }
     }
 }
