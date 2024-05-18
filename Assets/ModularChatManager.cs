@@ -360,7 +360,7 @@ public class ModularChatManager : NetworkBehaviour
 public enum ChatType { Global, Personal, Team, Combined };
 
 [System.Serializable]
-public class ChatSettings : MonoBehaviour
+public class ChatSettings
 {
     public ChatSettings(string _n, int _id, UnityEngine.Color _c, ChatType _t, List<ulong> _u, string _p)
     {
@@ -390,7 +390,7 @@ public class ChatSettings : MonoBehaviour
     {
         if(ModularChatManager.instance != null && ModularChatManager.instance.messagePrefab != null)
         {
-            GameObject newMessage = Instantiate(ModularChatManager.instance.messagePrefab);
+            GameObject newMessage = GameObject.Instantiate(ModularChatManager.instance.messagePrefab);
             newMessage.transform.SetParent(this.chatGameObject.transform);
             MessageScript messageScript = newMessage.GetComponent<MessageScript>();
             if (_color.HasValue)
