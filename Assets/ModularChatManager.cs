@@ -115,7 +115,6 @@ public class ModularChatManager : NetworkBehaviour
             if (currentLobby.HasValue)
             {
                 SendMessageToChat(tempMessage,username,tempChatID);
-                CreateGlobalChat(NetworkManager.ConnectedClientsIds.ToList());
             }
         }
     }
@@ -377,6 +376,7 @@ public class ChatSettings
     public UnityEngine.Color chatColor;
 
     public GameObject chatGameObject;
+    public GameObject messagesParent;
 
     public ChatType chatType;
 
@@ -391,10 +391,12 @@ public class ChatSettings
 
     public void SendMessage(string _message,string _sender,UnityEngine.Color? _color)
     {
+        if(messagesParent == null) { messagesParent = chatGameObject.GetComponentInChildren<VerticalLayoutGroup>().gameObject; }
+
         if(ModularChatManager.instance != null && ModularChatManager.instance.messagePrefab != null)
         {
             GameObject newMessage = GameObject.Instantiate(ModularChatManager.instance.messagePrefab);
-            newMessage.transform.SetParent(this.chatGameObject.transform);
+            newMessage.transform.SetParent(this.messagesParent.transform);
 
             MessageScript messageScript = newMessage.GetComponent<MessageScript>();
 
