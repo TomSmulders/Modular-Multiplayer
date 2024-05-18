@@ -12,9 +12,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using System;
+using UnityEditor.VersionControl;
+using UnityEngine.Analytics;
 
 public class ModularChatManager : NetworkBehaviour
 {
+    public static ModularChatManager instance;
+
     public bool useSteamUsername = true;
     public string username = "user";
     public UnityEngine.Color myUsernameColor = UnityEngine.Color.white;
@@ -43,8 +47,13 @@ public class ModularChatManager : NetworkBehaviour
     public GameObject chatboxPrefab;
     public GameObject chatboxParent;
 
+    public string tempMessage;
+    public int tempChatID;
+
     private void Awake()
     {
+        if (instance == null) { instance = this; }
+        else { Destroy(this); }
         if (GlobalGameManager.instance.currentLobby.HasValue)
         {
             currentLobby = GlobalGameManager.instance.currentLobby.Value;
@@ -77,12 +86,6 @@ public class ModularChatManager : NetworkBehaviour
     }
 
 
-    public void SendMessage()
-    {
-
-    }
-
-
     public void ReceiveChat() { }
 
 
@@ -107,12 +110,27 @@ public class ModularChatManager : NetworkBehaviour
             }
 
         }
+        else if(Input.GetKeyDown(KeyCode.S) && IsHost)
+        {
+            if (currentLobby.HasValue)
+            {
+                SendMessageToChat(tempMessage,username,tempChatID);
+                CreateGlobalChat(NetworkManager.ConnectedClientsIds.ToList());
+            }
+        }
     }
     
+    public void SendMessageToChat(string _message, string _sender, int _chatId)
+    {
+        ChatSettings chat = GetChatById(_chatId);
+        if(chat != null)
+        {
+            I_WantTo_Send_A_Message_ServerRpc(SerializeList<ulong>(chat.chatUsers), _message, _sender, _chatId);
+        }
+    }
+
     public void CreateGlobalChat(List<ulong> _users)
     {
-        Debug.Log("length : " + _users.Count);
-        Debug.Log("serialized : " + SerializeList(_users));
         I_Want_To_Create_A_Chat_ServerRpc(SerializeList(_users), defaultGlobalChatColor, ChatType.Global, "Global");
     }
 
@@ -187,6 +205,27 @@ public class ModularChatManager : NetworkBehaviour
         return standartList;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void I_WantTo_Send_A_Message_ServerRpc(string _usersToSendToSerialized, string _message, string _sender, int _chatId)
+    {
+        Send_Message_ClientRpc(_usersToSendToSerialized, _message, _sender, _chatId);
+    }
+
+    [ClientRpc]
+    public void Send_Message_ClientRpc(string _usersToSendToSerialized, string _message, string _sender, int _chatId)
+    {
+        List<ulong> _usersToSendTo = DeserializeList<ulong>(_usersToSendToSerialized);
+
+        if (_usersToSendTo.Contains(NetworkManager.LocalClientId))
+        {
+            ChatSettings chat = GetChatById(_chatId);
+            if (chat != null)
+            {
+                chat.SendMessage(_message, _sender,chat.chatColor);
+            }
+        }
+    }
+
 
     [ServerRpc(RequireOwnership = false)]
     public void I_Want_To_Create_A_Chat_ServerRpc(string _usersInChatJson, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
@@ -221,6 +260,19 @@ public class ModularChatManager : NetworkBehaviour
 
             chat.chatGameObject = Instantiate(chatboxPrefab);
             chat.chatGameObject.transform.SetParent(chatboxParent.transform);
+            chat.chatGameObject.name = chat.chatName;
+
+            chat.chatCommands.AddRange(allChatsCommands);
+            switch (chat.chatType)
+            {
+                case ChatType.Global: chat.chatCommands.AddRange(globalChatCommands); break;
+                case ChatType.Personal: chat.chatCommands.AddRange(personalChatCommands); break;
+                case ChatType.Team: chat.chatCommands.AddRange(teamChatCommands); break;
+                case ChatType.Combined:
+                    chat.chatCommands.AddRange(globalChatCommands);
+                    chat.chatCommands.AddRange(personalChatCommands);
+                    chat.chatCommands.AddRange(teamChatCommands); break;
+            }
 
             chats.Add(chat);
 
@@ -276,6 +328,18 @@ public class ModularChatManager : NetworkBehaviour
         return null;
     }
 
+    ChatSettings GetChatById(int _id)
+    {
+        foreach (var chat in chats)
+        {
+            if(chat.chatId == _id)
+            {
+                return chat;
+            }
+        }
+        return null;
+    }
+
     string ExtractFirstVector(string input)
     {
         int startIndex = input.IndexOf('(');
@@ -295,11 +359,10 @@ public class ModularChatManager : NetworkBehaviour
 
 public enum ChatType { Global, Personal, Team, Combined };
 
-
 [System.Serializable]
-public class ChatSettings
+public class ChatSettings : MonoBehaviour
 {
-    public ChatSettings(string _n , int _id, UnityEngine.Color _c, ChatType _t, List<ulong> _u, string _p)
+    public ChatSettings(string _n, int _id, UnityEngine.Color _c, ChatType _t, List<ulong> _u, string _p)
     {
         this.chatName = _n;
         this.chatId = _id;
@@ -318,11 +381,30 @@ public class ChatSettings
     public ChatType chatType;
 
     public List<ulong> chatUsers = new List<ulong>();
-    public List<string> chatHistory = new List<string>();
+    public Dictionary<string, GameObject> chatHistory = new Dictionary<string, GameObject>();
 
     public string chatCommandPrefix; // <-- character before the command (like --> /tp)
     public List<ChatCommand> chatCommands = new List<ChatCommand>();//commands
+
+    public void SendMessage(string _message,string _sender,UnityEngine.Color? _color)
+    {
+        if(ModularChatManager.instance != null && ModularChatManager.instance.messagePrefab != null)
+        {
+            GameObject newMessage = Instantiate(ModularChatManager.instance.messagePrefab);
+            newMessage.transform.SetParent(this.chatGameObject.transform);
+            MessageScript messageScript = newMessage.GetComponent<MessageScript>();
+            if (_color.HasValue)
+            {
+                messageScript = new MessageScript(_sender, _message, _color.Value);
+            }
+            else
+            {
+                messageScript = new MessageScript(_sender, _message, chatColor);
+            }
+        }
+    }
 }
+
 
 [System.Serializable]
 public class ChatCommand
