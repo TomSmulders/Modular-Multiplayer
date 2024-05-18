@@ -11,6 +11,7 @@ using Netcode.Transports.Facepunch;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
+using System;
 
 public class ModularChatManager : NetworkBehaviour
 {
@@ -130,35 +131,58 @@ public class ModularChatManager : NetworkBehaviour
     public void CreateCombinedChat() { }
 
 
-    private string SerializeList(List<ulong> ulongList)  
+    private string SerializeList<T>(List<T> standartList)  
     {
         string stringlist = "";
-        for (int i = 0; i < ulongList.Count; i++)
+        for (int i = 0; i < standartList.Count; i++)
         {
-            if(i < ulongList.Count - 1)
+            if(i < standartList.Count - 1)
             {
-                stringlist += ulongList[i].ToString() + ",";
+                stringlist += standartList[i].ToString() + ",";
             }
             else
             {
-                stringlist += ulongList[i].ToString();
+                stringlist += standartList[i].ToString();
             }
         }
 
         return stringlist;
     }
 
-    private List<ulong> DeserializeList(string stringlist)
+    private List<T> DeserializeList<T>(string stringlist)
     {
-        List<ulong> ulongList = new List<ulong>();
+        List<T> standartList = new List<T>();
         string[] stringArray = stringlist.Split(",");
 
         foreach (var id in stringArray)
         {
-            ulongList.Add(ulong.Parse(id));
+            if (typeof(T) == typeof(ulong))
+            {
+                ulong parsedValue;
+                if (ulong.TryParse(id, out parsedValue))
+                    standartList.Add((T)Convert.ChangeType(parsedValue, typeof(T)));
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                int parsedValue;
+                if (int.TryParse(id, out parsedValue))
+                    standartList.Add((T)Convert.ChangeType(parsedValue, typeof(T)));
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                float parsedValue;
+                if (float.TryParse(id, out parsedValue))
+                    standartList.Add((T)Convert.ChangeType(parsedValue, typeof(T)));
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                double parsedValue;
+                if (double.TryParse(id, out parsedValue))
+                    standartList.Add((T)Convert.ChangeType(parsedValue, typeof(T)));
+            }
         }
 
-        return ulongList;
+        return standartList;
     }
 
 
@@ -184,7 +208,7 @@ public class ModularChatManager : NetworkBehaviour
     {
         Debug.Log("Received usersInChatJson: " + _usersInChatJson); // Debugging
 
-        List<ulong> _usersInChat = DeserializeList(_usersInChatJson); 
+        List<ulong> _usersInChat = DeserializeList<ulong>(_usersInChatJson); 
 
         Debug.Log("Length of usersInChat: " + _usersInChat.Count); // Debugging
 
