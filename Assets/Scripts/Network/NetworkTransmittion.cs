@@ -68,7 +68,7 @@ public class NetworkTransmittion : NetworkBehaviour
     {
         if(_id == GameNetworkManager.instance.me.id)
         {
-            GameNetworkManager.instance.Disconnect_Player();
+            GameNetworkManager.instance.Disconnect();
         }
     }
 

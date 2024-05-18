@@ -72,7 +72,7 @@ public class GameNetworkManager : NetworkBehaviour
     {
         if(_user.Id.ToString() == _lobby.GetData("LobbyOwner"))
         {
-            Disconnect_Player();
+            Disconnect();
         }
         Update_Lobby(_lobby.Members);
     }
@@ -88,7 +88,7 @@ public class GameNetworkManager : NetworkBehaviour
         if (clientId == 0)
         {
             Debug.Log("disconnect");
-            Disconnect_Player();
+            Disconnect();
         }
     }
     public async void SteamFriends_OnGameLobbyJoinRequested(Lobby _lobby, SteamId _user)
@@ -101,6 +101,7 @@ public class GameNetworkManager : NetworkBehaviour
         else
         {
             currentLobby = _lobby;
+            GlobalGameManager.instance.currentLobby = _lobby;
             Update_Lobby(_lobby.Members);
             UIManager.instance.Show_In_Lobby_Screen();
         }
@@ -122,7 +123,7 @@ public class GameNetworkManager : NetworkBehaviour
         currentLobby = await SteamMatchmaking.CreateLobbyAsync(_maxPlayers);
         currentLobby.Value.SetData("LobbyOwner", currentLobby.Value.Owner.Id.ToString());
 
-        GlobalGameSettings.instance.currentLobby = currentLobby;
+        GlobalGameManager.instance.currentLobby = currentLobby;
 
         Set_Lobby_PublicityMode(_lobbyMode);
         Setup_Lobby();
@@ -184,6 +185,8 @@ public class GameNetworkManager : NetworkBehaviour
                             else
                             {
                                 currentLobby = _lobby;
+                                GlobalGameManager.instance.currentLobby = currentLobby;
+
 
                                 Update_Lobby(_lobby.Members);
                                 UIManager.instance.Show_In_Lobby_Screen();
@@ -233,7 +236,7 @@ public class GameNetworkManager : NetworkBehaviour
     //Party related
     public void Update_Lobby(IEnumerable<Friend> _memberIEnumerable)
     {
-        GlobalGameSettings.instance.currentLobby = currentLobby;
+        GlobalGameManager.instance.currentLobby = currentLobby;
 
         Update_If_Players_Ready(partyReady);
 
@@ -309,27 +312,10 @@ public class GameNetworkManager : NetworkBehaviour
 
 
     //leaving
-    public void Disconnect_Player()
+    public void Disconnect()
     {
-        currentLobby?.Leave();
-        if (NetworkManager.Singleton == null)
-        {
-            return;
-        }
-        else
-        {
-            NetworkManager.Singleton.OnClientConnectedCallback -= Singleton_OnClientConnectedCallback;
-        }
-
-        players.Clear();
-
-        NetworkManager.Singleton.Shutdown(true);
-        Debug.Log("Disconnected");
-
-        GlobalGameSettings.instance.currentLobby = currentLobby;
-
+        GlobalGameManager.instance.Disconnect_Player(currentLobby);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
     }
     public void Kick_Player(ulong _steamId)
     {

@@ -16,6 +16,4 @@ public class GlobalGameSettings : MonoBehaviour
 
     public string gameName;
     public int maxPartySize = 5;
-
-    public Lobby? currentLobby;
 }

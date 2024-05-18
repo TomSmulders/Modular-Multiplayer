@@ -1996,22 +1996,14 @@ MonoBehaviour:
   useSteamUsername: 1
   username: user
   myUsernameColor: {r: 1, g: 1, b: 1, a: 1}
-  defaultUserChatColor: {r: 1, g: 1, b: 1, a: 1}
+  defaultGlobalChatColor: {r: 1, g: 1, b: 1, a: 1}
   defaultPersonalChatColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   accesIds: c9e141ba00000000f5eef501000000000100000000000000
   multipleChats: 0
   chatContentBoxes: {fileID: 0}
   chatInput: {fileID: 0}
   commandPrefix: /
-  chats:
-  - chatName: Test
-    chatId: 0
-    chatColor: {r: 1, g: 0.77687377, b: 0.4575472, a: 1}
-    chatType: 2
-    chatUsers: 
-    chatHistory: []
-    chatCommandPrefix: 
-    chatCommands: []
+  chats: []
   globalChatCommands:
   - name: tp
     requiresAccess: 1
@@ -2063,7 +2055,9 @@ MonoBehaviour:
   personalChatCommands: []
   teamChatCommands: []
   allChatsCommands: []
-  messagePrefab: {fileID: 0}
+  messagePrefab: {fileID: 4617261921427001996, guid: 6b44ba68489600144affc291efd931d0, type: 3}
+  chatboxPrefab: {fileID: 1057020394198454482, guid: 534466cf6a4cd014fa695cb9531f7d5f, type: 3}
+  chatboxParent: {fileID: 1682994623}
 --- !u!1 &1466066845
 GameObject:
   m_ObjectHideFlags: 0
@@ -2787,7 +2781,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1682994624}
   m_Layer: 5
-  m_Name: Content
+  m_Name: CHATBOX PARENT OBJECT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

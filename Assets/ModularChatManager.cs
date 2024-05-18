@@ -40,12 +40,14 @@ public class ModularChatManager : NetworkBehaviour
     public List<ChatCommand> allChatsCommands = new List<ChatCommand>();
 
     public GameObject messagePrefab;
+    public GameObject chatboxPrefab;
+    public GameObject chatboxParent;
 
     private void Awake()
     {
-        if (GlobalGameSettings.instance.currentLobby.HasValue)
+        if (GlobalGameManager.instance.currentLobby.HasValue)
         {
-            currentLobby = GlobalGameSettings.instance.currentLobby.Value;
+            currentLobby = GlobalGameManager.instance.currentLobby.Value;
         }
     }
 
@@ -206,16 +208,7 @@ public class ModularChatManager : NetworkBehaviour
     [ClientRpc]
     void CreateChat_ClientRpc(string _usersInChatJson, UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
     {
-        Debug.Log("Received usersInChatJson: " + _usersInChatJson); // Debugging
-
         List<ulong> _usersInChat = DeserializeList<ulong>(_usersInChatJson); 
-
-        Debug.Log("Length of usersInChat: " + _usersInChat.Count); // Debugging
-
-        foreach (var item in _usersInChat)
-        {
-            Debug.Log(item); // Debugging
-        }
 
         if (_usersInChat.Contains(NetworkManager.LocalClientId))
         {
@@ -225,6 +218,12 @@ public class ModularChatManager : NetworkBehaviour
                 _chatName = NetworkManager.LocalClientId == _usersInChat[0] ? usernames[1] : usernames[0];
             }
             ChatSettings chat = new ChatSettings(_chatName, _chatId, _chatColor, _chatType, _usersInChat, commandPrefix);
+
+            chat.chatGameObject = Instantiate(chatboxPrefab);
+            chat.chatGameObject.transform.SetParent(chatboxParent.transform);
+
+            chats.Add(chat);
+
             Debug.Log("I created a chat");
         }
     }
@@ -313,6 +312,8 @@ public class ChatSettings
     public string chatName;
     public int chatId;
     public UnityEngine.Color chatColor;
+
+    public GameObject chatGameObject;
 
     public ChatType chatType;
 
