@@ -11,10 +11,10 @@ public class MoveMentNetworkTransform : NetworkBehaviour
         transform.position += _movementInput;
     }
 
-
-    void Sync_quaternion_serverRpc()
+    [ServerRpc(RequireOwnership = true)]
+    void Sync_quaternion_serverRpc(Quaternion _quaternionInput)
     {
-
+        transform.rotation = _quaternionInput;
     }
 
 
