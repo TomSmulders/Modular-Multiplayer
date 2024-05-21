@@ -1,3 +1,4 @@
+using Steamworks.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class GlobalGameSettings : MonoBehaviour
     {
         if (instance == null) { instance = this; }
         else { Destroy(this); }
+        DontDestroyOnLoad(gameObject);
     }
 
     public string gameName;

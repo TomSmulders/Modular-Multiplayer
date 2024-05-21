@@ -110,7 +110,7 @@ public class PlayersUIManager : MonoBehaviour
 
     public void Exit_Party()
     {
-        GameNetworkManager.instance.Disconnect_Player();
+        GameNetworkManager.instance.Disconnect();
     }
 
     public void Exit_Party_HOST()
@@ -119,7 +119,7 @@ public class PlayersUIManager : MonoBehaviour
         {
             //Add a check to actually leave
 
-            GameNetworkManager.instance.Disconnect_Player();
+            GameNetworkManager.instance.Disconnect();
         }
     }
 

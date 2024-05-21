@@ -10,9 +10,15 @@ using UnityEngine.UI;
 using Netcode.Transports.Facepunch;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
+using System;
+using UnityEditor.VersionControl;
+using UnityEngine.Analytics;
 
 public class ModularChatManager : NetworkBehaviour
 {
+    public static ModularChatManager instance;
+
     public bool useSteamUsername = true;
     public string username = "user";
     public UnityEngine.Color myUsernameColor = UnityEngine.Color.white;
@@ -38,12 +44,26 @@ public class ModularChatManager : NetworkBehaviour
     public List<ChatCommand> allChatsCommands = new List<ChatCommand>();
 
     public GameObject messagePrefab;
+    public GameObject chatboxPrefab;
+    public GameObject chatboxParent;
+
+    public string tempMessage;
+    public int tempChatID;
+
+    private void Awake()
+    {
+        if (instance == null) { instance = this; }
+        else { Destroy(this); }
+        if (GlobalGameManager.instance.currentLobby.HasValue)
+        {
+            currentLobby = GlobalGameManager.instance.currentLobby.Value;
+        }
+    }
 
     private void Start()
     {
         //roep het voorbeeld command
-        RunCommand("/kick kyan");
-
+        //RunCommand("/kick kyan");
     }
 
     //voorbeeld command
@@ -66,12 +86,6 @@ public class ModularChatManager : NetworkBehaviour
     }
 
 
-    public void SendMessage()
-    {
-
-    }
-
-
     public void ReceiveChat() { }
 
 
@@ -88,7 +102,6 @@ public class ModularChatManager : NetworkBehaviour
             Debug.Log("Trying to create chat");
             if (currentLobby.HasValue)
             {
-                Debug.Log("");
                 CreateGlobalChat(NetworkManager.ConnectedClientsIds.ToList());
             }
             else
@@ -97,23 +110,39 @@ public class ModularChatManager : NetworkBehaviour
             }
 
         }
+        else if(Input.GetKeyDown(KeyCode.S) && IsHost)
+        {
+            if (currentLobby.HasValue)
+            {
+                SendMessageToChat(tempMessage,username,tempChatID);
+            }
+        }
     }
     
+    public void SendMessageToChat(string _message, string _sender, int _chatId)
+    {
+        ChatSettings chat = GetChatById(_chatId);
+        if(chat != null)
+        {
+            I_WantTo_Send_A_Message_ServerRpc(SerializeList<ulong>(chat.chatUsers), _message, _sender, _chatId);
+        }
+    }
+
     public void CreateGlobalChat(List<ulong> _users)
     {
-        I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), defaultGlobalChatColor, ChatType.Global, "Global");
+        I_Want_To_Create_A_Chat_ServerRpc(SerializeList(_users), defaultGlobalChatColor, ChatType.Global, "Global");
     }
 
     public void CreatePersonalChat(ulong _otherUser , string _otherUsername)
     {
         List<ulong> _users = new List<ulong>(){ _otherUser, NetworkManager.Singleton.LocalClientId };
         string _chatName = _otherUsername + ',' + username;
-        I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), defaultPersonalChatColor, ChatType.Personal , _chatName);
+        I_Want_To_Create_A_Chat_ServerRpc(SerializeList(_users), defaultPersonalChatColor, ChatType.Personal , _chatName);
     }
 
     public void CreateTeamChat(List<ulong> _users, UnityEngine.Color _teamColor , string _teamName)
     {
-        I_Want_To_Create_A_Chat_ServerRpc(SerializeListToJson(_users), _teamColor, ChatType.Team , _teamName);
+        I_Want_To_Create_A_Chat_ServerRpc(SerializeList(_users), _teamColor, ChatType.Team , _teamName);
     }
 
 
@@ -121,12 +150,85 @@ public class ModularChatManager : NetworkBehaviour
     public void CreateCombinedChat() { }
 
 
-
-    [ServerRpc]
-    public void I_Want_To_Create_A_Chat_ServerRpc(string _usersInChatString, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
+    private string SerializeList<T>(List<T> standartList)  
     {
-        List<ulong> _usersInChat = DeserializeJsonToList(_usersInChatString);
+        string stringlist = "";
+        for (int i = 0; i < standartList.Count; i++)
+        {
+            if(i < standartList.Count - 1)
+            {
+                stringlist += standartList[i].ToString() + ",";
+            }
+            else
+            {
+                stringlist += standartList[i].ToString();
+            }
+        }
 
+        return stringlist;
+    }
+
+    private List<T> DeserializeList<T>(string stringlist)
+    {
+        List<T> standartList = new List<T>();
+        string[] stringArray = stringlist.Split(",");
+
+        foreach (var id in stringArray)
+        {
+            if (typeof(T) == typeof(ulong))
+            {
+                ulong parsedValue;
+                if (ulong.TryParse(id, out parsedValue))
+                    standartList.Add((T)Convert.ChangeType(parsedValue, typeof(T)));
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                int parsedValue;
+                if (int.TryParse(id, out parsedValue))
+                    standartList.Add((T)Convert.ChangeType(parsedValue, typeof(T)));
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                float parsedValue;
+                if (float.TryParse(id, out parsedValue))
+                    standartList.Add((T)Convert.ChangeType(parsedValue, typeof(T)));
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                double parsedValue;
+                if (double.TryParse(id, out parsedValue))
+                    standartList.Add((T)Convert.ChangeType(parsedValue, typeof(T)));
+            }
+        }
+
+        return standartList;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void I_WantTo_Send_A_Message_ServerRpc(string _usersToSendToSerialized, string _message, string _sender, int _chatId)
+    {
+        Send_Message_ClientRpc(_usersToSendToSerialized, _message, _sender, _chatId);
+    }
+
+    [ClientRpc]
+    public void Send_Message_ClientRpc(string _usersToSendToSerialized, string _message, string _sender, int _chatId)
+    {
+        List<ulong> _usersToSendTo = DeserializeList<ulong>(_usersToSendToSerialized);
+
+        if (_usersToSendTo.Contains(NetworkManager.LocalClientId))
+        {
+            ChatSettings chat = GetChatById(_chatId);
+            if (chat != null)
+            {
+                chat.SendMessage(_message, _sender,chat.chatColor);
+            }
+        }
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void I_Want_To_Create_A_Chat_ServerRpc(string _usersInChatJson, UnityEngine.Color _chatColor , ChatType _chatType , string _chatName)
+    { 
         int _lobbyChatAmmount = 0;
         if (int.TryParse(GameNetworkManager.instance.currentLobby.Value.GetData("lobbyChatAmmount"), out _lobbyChatAmmount))
         {
@@ -138,57 +240,44 @@ public class ModularChatManager : NetworkBehaviour
         }
         GameNetworkManager.instance.currentLobby.Value.SetData("lobbyChatAmmount", _lobbyChatAmmount.ToString());
 
+        CreateChat_ClientRpc(_usersInChatJson, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
+    }
+
+    [ClientRpc]
+    void CreateChat_ClientRpc(string _usersInChatJson, UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
+    {
+        List<ulong> _usersInChat = DeserializeList<ulong>(_usersInChatJson); 
 
         if (_usersInChat.Contains(NetworkManager.LocalClientId))
         {
-            if(_chatType == ChatType.Personal)
+            if (_chatType == ChatType.Personal)
             {
                 string[] usernames = _chatName.Split(',');
                 _chatName = NetworkManager.LocalClientId == _usersInChat[0] ? usernames[1] : usernames[0];
             }
-            CreateChat_ClientRpc(_usersInChatString, _chatColor, _chatType, _lobbyChatAmmount, _chatName);
-        }
-    }
+            ChatSettings chat = new ChatSettings(_chatName, _chatId, _chatColor, _chatType, _usersInChat, commandPrefix);
 
-    [ClientRpc]
-    void CreateChat_ClientRpc(string _usersInChat , UnityEngine.Color _chatColor, ChatType _chatType, int _chatId, string _chatName)
-    {
-        ChatSettings chat = new ChatSettings(_chatName,_chatId, _chatColor, _chatType, DeserializeJsonToList(_usersInChat), commandPrefix);
-        Debug.Log("I created a chat");
-    }
+            chat.chatGameObject = Instantiate(chatboxPrefab);
+            chat.chatGameObject.transform.SetParent(chatboxParent.transform);
+            chat.chatGameObject.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            chat.chatGameObject.name = chat.chatName;
 
-
-
-    private string SerializeListToJson(List<ulong> list)
-    {
-        List<string> stringList = new List<string>();
-        foreach (ulong value in list)
-        {
-            stringList.Add(value.ToString());
-        }
-
-        string jsonString = JsonUtility.ToJson(stringList);
-        return jsonString;
-    }
-    private List<ulong> DeserializeJsonToList(string jsonString)
-    {
-        List<string> stringList = JsonUtility.FromJson<List<string>>(jsonString);
-
-        List<ulong> ulongList = new List<ulong>();
-        foreach (string str in stringList)
-        {
-            ulong value;
-            if (ulong.TryParse(str, out value))
+            chat.chatCommands.AddRange(allChatsCommands);
+            switch (chat.chatType)
             {
-                ulongList.Add(value);
+                case ChatType.Global: chat.chatCommands.AddRange(globalChatCommands); break;
+                case ChatType.Personal: chat.chatCommands.AddRange(personalChatCommands); break;
+                case ChatType.Team: chat.chatCommands.AddRange(teamChatCommands); break;
+                case ChatType.Combined:
+                    chat.chatCommands.AddRange(globalChatCommands);
+                    chat.chatCommands.AddRange(personalChatCommands);
+                    chat.chatCommands.AddRange(teamChatCommands); break;
             }
-            else
-            {
-                Debug.LogError("Failed to parse ulong value from string: " + str);
-            }
-        }
 
-        return ulongList;
+            chats.Add(chat);
+
+            Debug.Log("I created a chat");
+        }
     }
 
     public void RunCommand(string commandText)
@@ -239,6 +328,18 @@ public class ModularChatManager : NetworkBehaviour
         return null;
     }
 
+    ChatSettings GetChatById(int _id)
+    {
+        foreach (var chat in chats)
+        {
+            if(chat.chatId == _id)
+            {
+                return chat;
+            }
+        }
+        return null;
+    }
+
     string ExtractFirstVector(string input)
     {
         int startIndex = input.IndexOf('(');
@@ -258,11 +359,10 @@ public class ModularChatManager : NetworkBehaviour
 
 public enum ChatType { Global, Personal, Team, Combined };
 
-
 [System.Serializable]
 public class ChatSettings
 {
-    public ChatSettings(string _n , int _id, UnityEngine.Color _c, ChatType _t, List<ulong> _u, string _p)
+    public ChatSettings(string _n, int _id, UnityEngine.Color _c, ChatType _t, List<ulong> _u, string _p)
     {
         this.chatName = _n;
         this.chatId = _id;
@@ -276,14 +376,46 @@ public class ChatSettings
     public int chatId;
     public UnityEngine.Color chatColor;
 
+    public GameObject chatGameObject;
+    public GameObject messagesParent;
+
     public ChatType chatType;
 
     public List<ulong> chatUsers = new List<ulong>();
-    public List<string> chatHistory = new List<string>();
+    public List<string> MessageHistory = new List<string>();
+    public List<MessageScript> MessageData = new List<MessageScript>();
+
+    public Dictionary<string, GameObject> chatHistory = new Dictionary<string, GameObject>();
 
     public string chatCommandPrefix; // <-- character before the command (like --> /tp)
     public List<ChatCommand> chatCommands = new List<ChatCommand>();//commands
+
+    public void SendMessage(string _message,string _sender,UnityEngine.Color? _color)
+    {
+        if(messagesParent == null) { messagesParent = chatGameObject.GetComponentInChildren<VerticalLayoutGroup>().gameObject; }
+
+        if(ModularChatManager.instance != null && ModularChatManager.instance.messagePrefab != null)
+        {
+            GameObject newMessage = GameObject.Instantiate(ModularChatManager.instance.messagePrefab);
+            newMessage.transform.SetParent(this.messagesParent.transform);
+
+            MessageScript messageScript = newMessage.GetComponent<MessageScript>();
+
+            if (_color.HasValue)
+            {
+                messageScript.Init(_sender, _message, _color.Value);
+            }
+            else
+            {
+                messageScript.Init(_sender, _message, chatColor);
+            }
+
+            MessageHistory.Add(_sender + " : " + _message);
+            MessageData.Add(messageScript);
+        }
+    }
 }
+
 
 [System.Serializable]
 public class ChatCommand
