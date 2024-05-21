@@ -97,7 +97,7 @@ public class ModularChatManager : NetworkBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G) && IsHost)
+        if (Input.GetKeyDown(KeyCode.G))
         {
             Debug.Log("Trying to create chat");
             if (currentLobby.HasValue)
@@ -110,7 +110,7 @@ public class ModularChatManager : NetworkBehaviour
             }
 
         }
-        else if(Input.GetKeyDown(KeyCode.S) && IsHost)
+        else if(Input.GetKeyDown(KeyCode.S))
         {
             if (currentLobby.HasValue)
             {
