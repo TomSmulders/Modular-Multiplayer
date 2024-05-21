@@ -66,7 +66,21 @@ public class ModularChatManager : NetworkBehaviour
         //RunCommand("/kick kyan");
     }
 
+
+    // OnInput(string text)
+    // if(text[0] == prefix)
+    // RunCommand(text)
+
     //voorbeeld command
+
+    public void tp_command(ChatCommand command)
+    {
+        ChatCommandVariable player = command.GetVariableByName("player");
+        ChatCommandVariable position = command.GetVariableByName("position");
+
+        Debug.Log("Teleport " + player.variableValue + " to " + position.variableValue);
+    }
+
     public void kick(ChatCommand command)
     {
         ChatCommandVariable player = command.GetVariableByName("player");
@@ -150,18 +164,18 @@ public class ModularChatManager : NetworkBehaviour
     public void CreateCombinedChat() { }
 
 
-    private string SerializeList<T>(List<T> standartList)  
+    private string SerializeList<T>(List<T> standardList)  
     {
         string stringlist = "";
-        for (int i = 0; i < standartList.Count; i++)
+        for (int i = 0; i < standardList.Count; i++)
         {
-            if(i < standartList.Count - 1)
+            if(i < standardList.Count - 1)
             {
-                stringlist += standartList[i].ToString() + ",";
+                stringlist += standardList[i].ToString() + ",";
             }
             else
             {
-                stringlist += standartList[i].ToString();
+                stringlist += standardList[i].ToString();
             }
         }
 
@@ -353,7 +367,7 @@ public class ModularChatManager : NetworkBehaviour
             return contentInsideParentheses;
         }
 
-        return null;
+        return input;
     }
 }
 
@@ -429,11 +443,7 @@ public class ChatCommand
 
     public ChatCommandVariable GetVariableByName(string varName)
     {
-        foreach (var variable in variables)
-        {
-            if (variable.variableName.ToLower() == varName.ToLower()) { return variable; }
-        }
-        return null;
+        return variables.FirstOrDefault(variable => variable.variableName.Equals(varName, StringComparison.OrdinalIgnoreCase));
     }
 
     [Header("Command function")]
