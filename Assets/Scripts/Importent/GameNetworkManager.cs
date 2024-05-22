@@ -250,7 +250,7 @@ public class GameNetworkManager : NetworkBehaviour
                 Remove_Player(player);
             }
         }
-        foreach (Friend user in members)
+        foreach (Friend user in members) 
         {
             bool isInPlayers = false;
             foreach (PlayerData player in players)
@@ -265,14 +265,11 @@ public class GameNetworkManager : NetworkBehaviour
                 Add_Player(user);
             }
         }
-        if(me == null)
+        foreach (PlayerData player in players)
         {
-            foreach (PlayerData player in players)
+            if (player.id == SteamClient.SteamId)
             {
-                if (player.id == SteamClient.SteamId)
-                {
-                    me = player;
-                }
+                me = player;
             }
         }
     }
@@ -333,7 +330,7 @@ public class GameNetworkManager : NetworkBehaviour
         UIManager.instance.Hide_Friends();
 
         players.Clear();
-
+        partyReady = false;
 
         Debug.Log("THIS IS A TEST IAUWOIJOIJNAI");
 

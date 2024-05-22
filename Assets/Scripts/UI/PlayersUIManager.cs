@@ -39,7 +39,7 @@ public class PlayersUIManager : MonoBehaviour
 
     #endregion
 
-    public void Is_Host(bool _state)
+    public void Is_Host(bool _state)  
     {
         HostUI.SetActive(_state);
         ClientUI.SetActive(!_state);
@@ -48,7 +48,8 @@ public class PlayersUIManager : MonoBehaviour
 
     public void ResetUI()
     {
-        Update_Party_Ready_State_Visuals(true);
+        Update_Party_Ready_State_Visuals(false);
+
         Set_Lobby_PublicityMode(LobbyPublicityMode.Public);
 
         HostReadyButton.Unready();

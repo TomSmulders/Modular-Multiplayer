@@ -38,6 +38,7 @@ public class GetFriends : MonoBehaviour
 
         friendsCardsOnline.Clear();
         friendsCardsOfline.Clear();
+        friendsCardsOnlineAndPlayingThisGame.Clear();
 
         if (visible)
         {
@@ -50,7 +51,7 @@ public class GetFriends : MonoBehaviour
                 }
                 if (friend.IsOnline && !friend.IsPlayingThisGame)
                 {
-                        friendsCardsOnline.Add(await Create_FriendsCard(friend, false, alphaOnline));
+                    friendsCardsOnline.Add(await Create_FriendsCard(friend, false, alphaOnline));
                 }
                 if (!friend.IsOnline)
                 {

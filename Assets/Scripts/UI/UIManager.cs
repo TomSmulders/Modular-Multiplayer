@@ -50,7 +50,6 @@ public class UIManager : MonoBehaviour
     {
         FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Friends";
         friendScreen.SetActive(false);
-        GetFriends.instance.Request_Friends(false);
     }
 
 
