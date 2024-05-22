@@ -334,6 +334,8 @@ public class GameNetworkManager : NetworkBehaviour
 
         PlayersUIManager.instance.ResetUI();
 
+        Debug.Log("Disconnect");
+
         //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     public void Kick_Player(ulong _steamId)
