@@ -314,6 +314,11 @@ public class GameNetworkManager : NetworkBehaviour
             Destroy(_user.gameobject);
         }
         players.Remove(_user);
+
+        if (IsHost)
+        {
+            NetworkTransmittion.instance.Check_If_All_Players_Are_Ready_ClientRPC();
+        }
     }
     public void Update_If_Players_Ready(bool _ready)
     {
