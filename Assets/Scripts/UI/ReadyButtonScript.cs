@@ -9,15 +9,12 @@ public class ReadyButtonScript : MonoBehaviour
     [SerializeField] Color readyColor;
     [SerializeField] Color unreadyColor;
 
-    Toggle toggle;
+    Toggle toggle; 
     TextMeshProUGUI text;
     bool isReady = false;
 
     private void Awake()
     {
-        toggle = GetComponent<Toggle>();
-        text = GetComponentInChildren<TextMeshProUGUI>();
-
         Update_Button_Visuals();
     }
 
@@ -45,7 +42,6 @@ public class ReadyButtonScript : MonoBehaviour
 
     void Update_Button_Visuals()
     {
-        toggle = GetComponent<Toggle>();
         if(TryGetComponent<Toggle>(out toggle))
         {
             ColorBlock block = toggle.colors;
@@ -56,8 +52,10 @@ public class ReadyButtonScript : MonoBehaviour
 
             toggle.colors = block;
 
-
-            text.text = isReady ? "Ready" : "Not Ready";
+            if (TryGetComponent<TextMeshProUGUI>(out text))
+            {
+                text.text = isReady ? "Ready" : "Not Ready";
+            }
         }
     }
 }
