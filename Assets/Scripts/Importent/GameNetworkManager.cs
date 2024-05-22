@@ -323,8 +323,10 @@ public class GameNetworkManager : NetworkBehaviour
         }
         foreach (GameObject obj in GameManager.instance.playerCards)
         {
-            Destroy(obj);
+            Destroy(obj); 
         }
+
+        PlayersUIManager.instance.ResetUI();
 
         UIManager.instance.Show_Lobby_Search_Screen();
 
@@ -332,9 +334,8 @@ public class GameNetworkManager : NetworkBehaviour
 
         players.Clear();
 
-        PlayersUIManager.instance.ResetUI();
 
-        Debug.Log("Disconnect");
+        Debug.Log("THIS IS A TEST IAUWOIJOIJNAI");
 
         //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

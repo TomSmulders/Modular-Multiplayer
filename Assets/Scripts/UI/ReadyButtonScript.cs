@@ -13,7 +13,7 @@ public class ReadyButtonScript : MonoBehaviour
     TextMeshProUGUI text;
     bool isReady = false;
 
-    private void Start()
+    private void Awake()
     {
         toggle = GetComponent<Toggle>();
         text = GetComponentInChildren<TextMeshProUGUI>();
@@ -45,15 +45,19 @@ public class ReadyButtonScript : MonoBehaviour
 
     void Update_Button_Visuals()
     {
-        ColorBlock block = toggle.colors;
-        block.normalColor = isReady ? readyColor : unreadyColor;
-        block.selectedColor = isReady ? readyColor : unreadyColor;
-        block.highlightedColor = isReady ? readyColor : unreadyColor;
-        block.pressedColor = !isReady ? readyColor : unreadyColor;
+        toggle = GetComponent<Toggle>();
+        if(TryGetComponent<Toggle>(out toggle))
+        {
+            ColorBlock block = toggle.colors;
+            block.normalColor = isReady ? readyColor : unreadyColor;
+            block.selectedColor = isReady ? readyColor : unreadyColor;
+            block.highlightedColor = isReady ? readyColor : unreadyColor;
+            block.pressedColor = !isReady ? readyColor : unreadyColor;
 
-        toggle.colors = block;
+            toggle.colors = block;
 
 
-        text.text = isReady ? "Ready" : "Not Ready";
+            text.text = isReady ? "Ready" : "Not Ready";
+        }
     }
 }
