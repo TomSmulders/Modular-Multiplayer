@@ -57,7 +57,7 @@ public class NetworkTransmittion : NetworkBehaviour
         GameNetworkManager.instance.Update_If_Players_Ready(ready);
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void Update_Players_That_Are_Ready_ServerRpc(ulong _clientId)
     {
         foreach (var player in GameNetworkManager.instance.players)
