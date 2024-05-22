@@ -74,14 +74,18 @@ public class GameNetworkManager : NetworkBehaviour
     private void OnLobbyMemberJoined(Lobby _lobby, Friend _user)
     {
         Update_Lobby(_lobby.Members);
+        NetworkTransmittion.instance.Check_If_All_Players_Are_Ready_ClientRPC(); 
     }
     private void OnLobbyMemberLeave(Lobby _lobby, Friend _user)
     {
-        if(_user.Id.ToString() == _lobby.GetData("LobbyOwner"))
+   
+        if (_user.Id.ToString() == _lobby.GetData("LobbyOwner"))
         {
             Disconnect();
         }
         Update_Lobby(_lobby.Members);
+        
+
     }
 
     private void Singleton_OnClientConnectedCallback(ulong clientId)
