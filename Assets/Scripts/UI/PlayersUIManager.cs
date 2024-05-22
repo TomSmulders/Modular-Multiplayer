@@ -45,6 +45,11 @@ public class PlayersUIManager : MonoBehaviour
         ClientUI.SetActive(!_state);
         Set_Lobby_PublicityMode(GameNetworkManager.instance.currentLobbyMode);
     }
+    public void Hide_UI()
+    {
+        HostUI.SetActive(false);
+        ClientUI.SetActive(false);
+    }
 
     public void ResetUI()
     {

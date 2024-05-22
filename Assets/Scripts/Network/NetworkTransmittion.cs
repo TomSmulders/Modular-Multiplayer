@@ -29,13 +29,16 @@ public class NetworkTransmittion : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void Change_Player_Ready_State_ClientRPC(ulong _id, bool _ready)
+    public void Change_Player_Ready_State_ClientRPC(ulong _id, bool _ready ,ulong _clientid = 999999999999)
     {
-        foreach (PlayerData player in GameNetworkManager.instance.players)
+        if(_clientid == 999999999999 || _clientid == NetworkManager.LocalClientId)
         {
-            if (player.id == _id)
+            foreach (PlayerData player in GameNetworkManager.instance.players)
             {
-                GameManager.instance.Ready_Player_Up(player, _ready, false);
+                if (player.id == _id)
+                {
+                    GameManager.instance.Ready_Player_Up(player, _ready, false);
+                }
             }
         }
     }
@@ -54,8 +57,19 @@ public class NetworkTransmittion : NetworkBehaviour
         GameNetworkManager.instance.Update_If_Players_Ready(ready);
     }
 
-    
-    
+    [ServerRpc]
+    public void Update_Players_That_Are_Ready_ServerRpc(ulong _clientId)
+    {
+        foreach (var player in GameNetworkManager.instance.players)
+        {
+            if (player.isReady)
+            {
+                Change_Player_Ready_State_ClientRPC(player.id,true,_clientId);
+            }
+        }
+    }
+
+
     //Kick player RPC
     [ServerRpc(RequireOwnership = false)]
     public void I_Want_To_Kick_A_Player_ServerRPC(ulong _id)

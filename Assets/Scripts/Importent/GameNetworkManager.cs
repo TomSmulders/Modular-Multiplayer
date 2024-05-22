@@ -60,7 +60,14 @@ public class GameNetworkManager : NetworkBehaviour
             Start_Client(_lobby.Owner.Id);
         }
 
-        PlayersUIManager.instance.Is_Host(NetworkManager.Singleton.IsHost);
+        if (NetworkManager.Singleton.IsHost)
+        {
+            PlayersUIManager.instance.Is_Host(NetworkManager.Singleton.IsHost);
+        }
+        else
+        {
+            PlayersUIManager.instance.Hide_UI();
+        }
 
         Update_Lobby(_lobby.Members);
     }
@@ -80,6 +87,13 @@ public class GameNetworkManager : NetworkBehaviour
     private void Singleton_OnClientConnectedCallback(ulong clientId)
     {
         Debug.Log("Client connected. Client ID: " + clientId);
+
+        PlayersUIManager.instance.Is_Host(NetworkManager.Singleton.IsHost);
+
+        Update_Lobby(currentLobby.Value.Members);
+
+        NetworkTransmittion.instance.Update_Players_That_Are_Ready_ServerRpc(clientId);
+
         // Add any additional logic you want to execute when a client connects
     }
     private void Singleton_OnClientDisconnectCallback(ulong clientId)
@@ -186,7 +200,6 @@ public class GameNetworkManager : NetworkBehaviour
                             {
                                 currentLobby = _lobby;
                                 GlobalGameManager.instance.currentLobby = currentLobby;
-
 
                                 Update_Lobby(_lobby.Members);
                                 UIManager.instance.Show_In_Lobby_Screen();
