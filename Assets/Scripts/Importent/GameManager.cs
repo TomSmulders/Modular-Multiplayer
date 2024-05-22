@@ -92,20 +92,29 @@ public class GameManager : MonoBehaviour
     }
     public async Task<Texture2D> Get_User_Profile_Picture(ulong _SteamId)
     {
-        Steamworks.Data.Image? profilepic = await SteamFriends.GetLargeAvatarAsync(_SteamId);
-        var avatar = new Texture2D((int)profilepic.Value.Width, (int)profilepic.Value.Height, TextureFormat.ARGB32, false);
-        avatar.filterMode = FilterMode.Trilinear;
-
-        for (int x = 0; x < profilepic.Value.Width; x++)
+        Debug.Log(_SteamId);
+        if(_SteamId != null)
         {
-            for (int y = 0; y < profilepic.Value.Height; y++)
+            Steamworks.Data.Image? profilepic = await SteamFriends.GetLargeAvatarAsync(_SteamId);
+
+            if (profilepic.HasValue)
             {
-                var p = profilepic.Value.GetPixel(x, y);
-                avatar.SetPixel(x, (int)profilepic.Value.Height - y, new UnityEngine.Color(p.r / 255.0f, p.g / 255.0f, p.b / 255.0f, p.a / 255.0f));
+                var avatar = new Texture2D((int)profilepic.Value.Width, (int)profilepic.Value.Height, TextureFormat.ARGB32, false);
+                avatar.filterMode = FilterMode.Trilinear;
+
+                for (int x = 0; x < profilepic.Value.Width; x++)
+                {
+                    for (int y = 0; y < profilepic.Value.Height; y++)
+                    {
+                        var p = profilepic.Value.GetPixel(x, y);
+                        avatar.SetPixel(x, (int)profilepic.Value.Height - y, new UnityEngine.Color(p.r / 255.0f, p.g / 255.0f, p.b / 255.0f, p.a / 255.0f));
+                    }
+                }
+
+                avatar.Apply();
+                return avatar;
             }
         }
-
-        avatar.Apply();
-        return avatar;
+        return new Texture2D(1, 1, TextureFormat.ARGB32, false);
     }
 }
