@@ -46,7 +46,7 @@ public class NetworkTransmittion : NetworkBehaviour
     [ClientRpc]
     public void Check_If_All_Players_Are_Ready_ClientRPC()
     {
-        bool ready = true;
+        bool ready = true; 
         foreach (PlayerData player in GameNetworkManager.instance.players)
         {
             if (!player.isReady)
@@ -67,6 +67,7 @@ public class NetworkTransmittion : NetworkBehaviour
                 Change_Player_Ready_State_ClientRPC(player.id,true,_clientId);
             }
         }
+      
     }
 
 
