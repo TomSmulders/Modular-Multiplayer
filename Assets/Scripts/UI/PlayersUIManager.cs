@@ -48,7 +48,7 @@ public class PlayersUIManager : MonoBehaviour
 
     public void ResetUI()
     {
-        Update_Party_Ready_State_Visuals(false);
+        Update_Party_Ready_State_Visuals(true);
         Set_Lobby_PublicityMode(LobbyPublicityMode.Public);
 
         HostReadyButton.Unready();
