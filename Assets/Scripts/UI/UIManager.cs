@@ -32,7 +32,7 @@ public class UIManager : MonoBehaviour
     }
 
     public void Toggle_Friends()
-    {
+    { 
         if (!friendScreen.activeSelf)
         {
             FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Back";
@@ -45,6 +45,12 @@ public class UIManager : MonoBehaviour
             friendScreen.SetActive(false);
             GetFriends.instance.Request_Friends(false);
         }
+    }
+    public void Hide_Friends()
+    {
+        FriendsButton.GetComponentInChildren<TextMeshProUGUI>().text = "Friends";
+        friendScreen.SetActive(false);
+        GetFriends.instance.Request_Friends(false);
     }
 
 

@@ -20,6 +20,11 @@ public class PlayersUIManager : MonoBehaviour
 
     public GameObject HostUI;
     public GameObject ClientUI;
+
+    [SerializeField] ReadyButtonScript HostReadyButton;
+    [SerializeField] ReadyButtonScript ClientReadyButton;
+
+
     [SerializeField] Color publicColor;
     [SerializeField] Color privateColor;
     [SerializeField] Color FriendsOnlyColor;
@@ -39,6 +44,15 @@ public class PlayersUIManager : MonoBehaviour
         HostUI.SetActive(_state);
         ClientUI.SetActive(!_state);
         Set_Lobby_PublicityMode(GameNetworkManager.instance.currentLobbyMode);
+    }
+
+    public void ResetUI()
+    {
+        Update_Party_Ready_State_Visuals(false);
+        Set_Lobby_PublicityMode(LobbyPublicityMode.Public);
+
+        HostReadyButton.Unready();
+        ClientReadyButton.Unready();
     }
 
     public void Next_Lobby_PublicityMode()
@@ -69,7 +83,7 @@ public class PlayersUIManager : MonoBehaviour
         Set_Lobby_PublicityMode(mode);
     }
 
-    void Set_Lobby_PublicityMode(GameNetworkManager.LobbyPublicityMode _lobbyMode)
+    public void Set_Lobby_PublicityMode(GameNetworkManager.LobbyPublicityMode _lobbyMode)
     {
         if (NetworkManager.Singleton.IsHost)
         {

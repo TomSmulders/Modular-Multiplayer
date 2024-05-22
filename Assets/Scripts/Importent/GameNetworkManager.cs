@@ -285,7 +285,7 @@ public class GameNetworkManager : NetworkBehaviour
         player.username = _user.Value.Name;
         player.isOwner = currentLobby.Value.IsOwnedBy(player.id);
 
-        GameManager.instance.reate_PlayerCard(player);
+        GameManager.instance.Create_PlayerCard(player);
 
         players.Add(player);
     }
@@ -315,7 +315,26 @@ public class GameNetworkManager : NetworkBehaviour
     public void Disconnect()
     {
         GlobalGameManager.instance.Disconnect_Player(currentLobby);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        //Reset scene 
+        foreach (GameObject obj in GameManager.instance.lobbyCards)
+        {
+            Destroy(obj);
+        }
+        foreach (GameObject obj in GameManager.instance.playerCards)
+        {
+            Destroy(obj);
+        }
+
+        UIManager.instance.Show_Lobby_Search_Screen();
+
+        UIManager.instance.Hide_Friends();
+
+        players.Clear();
+
+        PlayersUIManager.instance.ResetUI();
+
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     public void Kick_Player(ulong _steamId)
     {

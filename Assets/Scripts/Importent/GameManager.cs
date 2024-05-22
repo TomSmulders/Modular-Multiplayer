@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
 
         lobbyCards.Add(card);
     }
-    public async void reate_PlayerCard(PlayerData player)
+    public async void Create_PlayerCard(PlayerData player)
     {
         GameObject card = Instantiate(playerCardPrefab);
         card.transform.SetParent(playerCardParent.transform);
@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
         info.steamName = player.username;
         info.steamId = player.id;
         info.isOwner = player.isOwner;
-        info.ownerImage.SetActive(info.isOwner);
+        info.ownerImage.SetActive(info.isOwner); 
 
         info.SettingsButton.gameObject.SetActive(false);
         if (NetworkManager.Singleton.IsHost)
@@ -87,6 +87,8 @@ public class GameManager : MonoBehaviour
 
         player.profilePicture = await Get_User_Profile_Picture(info.steamId);
         info.profileImage.texture = player.profilePicture;
+
+        playerCards.Add(card);
     }
     public async Task<Texture2D> Get_User_Profile_Picture(ulong _SteamId)
     {

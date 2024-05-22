@@ -37,6 +37,12 @@ public class ReadyButtonScript : MonoBehaviour
         }
     }
 
+    public void Unready()
+    {
+        isReady = false;
+        Update_Button_Visuals();
+    }
+
     void Update_Button_Visuals()
     {
         ColorBlock block = toggle.colors;

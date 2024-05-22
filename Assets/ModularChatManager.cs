@@ -390,7 +390,7 @@ public class ChatSettings
     public string chatCommandPrefix; // <-- character before the command (like --> /tp)
     public List<ChatCommand> chatCommands = new List<ChatCommand>();//commands
 
-    public void SendMessage(string _message,string _sender,UnityEngine.Color? _color)
+    public void SendMessage(string _message,string _sender, UnityEngine.Color? _color)
     {
         if(messagesParent == null) { messagesParent = chatGameObject.GetComponentInChildren<VerticalLayoutGroup>().gameObject; }
 
