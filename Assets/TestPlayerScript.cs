@@ -16,15 +16,18 @@ public class TestPlayerScript : NetworkBehaviour
 
     void Update()
     {
-/*        if (!IsOwner) { return; }
+        if (!IsOwner) { return; }
 
         Vector3 movementInput = new Vector3(Input.GetAxis("Horizontal"),0, Input.GetAxis("Vertical"));
         movementInput *= speed * Time.deltaTime;
 
         if(Mathf.Abs(movementInput.x) + Mathf.Abs(movementInput.z) > 0)
         {
-            MovePlayer_ServerRpc(movementInput);
-        }*/
+            //MovePlayer_ServerRpc(movementInput);
+            transform.position += movementInput;
+
+            Debug.Log("Moved " + gameObject.name + " to :  " + transform.position + " by : " + SteamClient.Name);
+        }
     }
 
     [ServerRpc(RequireOwnership = true)]
