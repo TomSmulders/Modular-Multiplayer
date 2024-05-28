@@ -8,10 +8,12 @@ public class TestPlayerScript : NetworkBehaviour
 {
 
     [SerializeField] float speed = 50;
+    [SerializeField] GameObject cam;
 
     void Start()
     {
         transform.position += new Vector3(Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10));
+        if (IsOwner) { cam.SetActive(true); }
     }
 
     void Update()
