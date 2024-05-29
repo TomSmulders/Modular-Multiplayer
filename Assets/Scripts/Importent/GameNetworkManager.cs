@@ -388,7 +388,6 @@ public class GameNetworkManager : NetworkBehaviour
     public void Switch_scene(string sceneName)
     {
         NetworkManager.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-
     }
 }
 
