@@ -7,7 +7,7 @@ using UnityEngine;
 public class MoveMentNetworkTransform : NetworkBehaviour
 {
     [ServerRpc(RequireOwnership = true)]
-    void Syncmovement_serverRpc(Vector3 _movementInput)
+    void Sync_movement_serverRpc(Vector3 _movementInput)
     {
         transform.position += _movementInput;
     }
