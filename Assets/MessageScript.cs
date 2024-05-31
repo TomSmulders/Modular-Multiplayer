@@ -18,6 +18,13 @@ public class MessageScript : MonoBehaviour
         this.textColor = _c;
 
         tmpro = GetComponentInChildren<TextMeshProUGUI>();
+
+        float preferredHeight = tmpro.GetPreferredValues().y;
+        Debug.Log(preferredHeight);
+        RectTransform rectTransform = GetComponent<RectTransform>();
+
+        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, preferredHeight);
+
         tmpro.color = textColor;
         tmpro.text = sender + ": " + content;
     }
