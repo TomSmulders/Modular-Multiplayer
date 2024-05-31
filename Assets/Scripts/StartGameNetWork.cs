@@ -43,6 +43,11 @@ public class StartGameNetWork : NetworkBehaviour
 
                 NetworkObject spawnedPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<NetworkObject>();
                 spawnedPlayer.SpawnWithOwnership(player.Key);
+
+                if (player.Key != NetworkManager.LocalClientId)
+                {
+                    spawnedPlayer.GetComponentInChildren<Camera>().enabled = false;
+                }
             }
         }
     }
