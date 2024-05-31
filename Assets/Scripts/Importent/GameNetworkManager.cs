@@ -295,6 +295,7 @@ public class GameNetworkManager : NetworkBehaviour
         PlayerData player = new PlayerData();
 
         player.id = _user.Value.Id;
+        Debug.Log(_user.HasValue + " : " + _user.Value.Id); 
         player.friend = _user.Value;
         player.username = _user.Value.Name;
         player.isOwner = currentLobby.Value.IsOwnedBy(player.id);

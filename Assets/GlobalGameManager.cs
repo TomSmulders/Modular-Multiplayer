@@ -36,10 +36,18 @@ public class GlobalGameManager : MonoBehaviour
         }
     }
 
+    private void OnApplicationQuit()
+    {
+        if (currentLobby.HasValue)
+        {
+            Disconnect_Player(currentLobby.Value);
+        }
+    }
+
     public void Disconnect_Player(Lobby? _LobbyToLeave)
     {
         _LobbyToLeave?.Leave();
-        if (NetworkManager.Singleton == null)
+        if (NetworkManager.Singleton == null) 
         {
             return;
         }

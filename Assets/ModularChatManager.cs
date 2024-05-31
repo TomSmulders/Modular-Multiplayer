@@ -64,7 +64,21 @@ public class ModularChatManager : NetworkBehaviour
     {
         //roep het voorbeeld command
         //RunCommand("/kick kyan");
+
+        RunCommand("/tp kyan tom");
     }
+
+    public void TP_command(ChatCommand command)
+    {
+        ChatCommandVariable player1 = command.GetVariableByName("player1");
+        ChatCommandVariable player2 = command.GetVariableByName("player2");
+
+        Debug.Log(player1.variableValue + " Tped to " + player2.variableValue);
+
+        //do whatever you want
+
+    }
+
 
     //voorbeeld command
     public void kick(ChatCommand command)

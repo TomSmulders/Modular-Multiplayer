@@ -3248,7 +3248,57 @@ MonoBehaviour:
   chatInput: {fileID: 0}
   commandPrefix: /
   chats: []
-  globalChatCommands: []
+  globalChatCommands:
+  - name: tp
+    requiresAccess: 0
+    accessId: 0
+    variables:
+    - variableName: player1
+      variableType: 0
+      variableValue: 
+    - variableName: player2
+      variableType: 0
+      variableValue: 
+    commandEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1946771448}
+          m_TargetAssemblyTypeName: ModularChatManager, Assembly-CSharp
+          m_MethodName: TP_command
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - name: kick
+    requiresAccess: 0
+    accessId: 1
+    variables:
+    - variableName: player1
+      variableType: 0
+      variableValue: 
+    - variableName: player2
+      variableType: 0
+      variableValue: 
+    commandEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1946771448}
+          m_TargetAssemblyTypeName: ModularChatManager, Assembly-CSharp
+          m_MethodName: kick
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   personalChatCommands: []
   teamChatCommands: []
   allChatsCommands: []
