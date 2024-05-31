@@ -9,7 +9,7 @@ public class TestPlayerScript : NetworkBehaviour
 
     [SerializeField] float speed = 50;
     [SerializeField] GameObject Camholder;
-    Camera camera; 
+    Camera camera;
     public Vector2 rotation;
     public Vector2 sensitivity;
     private float currentX = 0.0f;
