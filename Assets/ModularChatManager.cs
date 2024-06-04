@@ -46,7 +46,7 @@ public class ModularChatManager : NetworkBehaviour
     public GameObject messagePrefab;
     public GameObject chatboxPrefab;
     public GameObject chatboxParent;
-
+      
     public string tempMessage;
     public int tempChatID;
 
