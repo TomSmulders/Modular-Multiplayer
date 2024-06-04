@@ -21,7 +21,6 @@ public class TestPlayerScript : NetworkBehaviour
         transform.position += new Vector3(Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10));
         if (IsOwner) { Camholder.SetActive(true); }
         camera = Camholder.GetComponent<Camera>();
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
