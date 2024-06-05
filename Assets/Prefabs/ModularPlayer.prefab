@@ -270,7 +270,6 @@ GameObject:
   - component: {fileID: 8551698335251562033}
   - component: {fileID: 7880055366833372575}
   - component: {fileID: -2875543969165291663}
-  - component: {fileID: 5267283487785095516}
   m_Layer: 0
   m_Name: ModularPlayer
   m_TagString: Untagged
@@ -341,7 +340,7 @@ MonoBehaviour:
     decelerationSpeed: 15
     runningMultiplier: 1.5
     sneakingMultiplier: 1.5
-    jumpForce: 10
+    jumpForce: 1000
     gravityScale: 15
     gravityMultiplier: 1
     directionMultipliers:
@@ -544,22 +543,10 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   UseQuaternionSynchronization: 1
   UseQuaternionCompression: 0
-  UseHalfFloatPrecision: 1
+  UseHalfFloatPrecision: 0
   InLocalSpace: 0
   Interpolate: 1
-  SlerpPosition: 0
---- !u!114 &5267283487785095516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 846273921879803558}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  SlerpPosition: 1
 --- !u!1 &897685803496680832
 GameObject:
   m_ObjectHideFlags: 0

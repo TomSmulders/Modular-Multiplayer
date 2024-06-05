@@ -12,6 +12,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using System;
+using TMPro;
 using UnityEditor.VersionControl;
 using UnityEngine.Analytics;
 
@@ -21,6 +22,7 @@ public class ModularChatManager : NetworkBehaviour
 
     public bool useSteamUsername = true;
     public string username = "user";
+    public int currentChatId = 1;
     public UnityEngine.Color myUsernameColor = UnityEngine.Color.white;
     public UnityEngine.Color defaultGlobalChatColor = UnityEngine.Color.white;
     public UnityEngine.Color defaultPersonalChatColor = UnityEngine.Color.gray;
@@ -29,8 +31,8 @@ public class ModularChatManager : NetworkBehaviour
 
     public bool multipleChats;
 
-    public GameObject chatContentBoxes;
-    public InputField chatInput;
+    public GameObject canvas;
+    public TMP_InputField chatInput;
 
     public string commandPrefix;
 
@@ -50,6 +52,8 @@ public class ModularChatManager : NetworkBehaviour
     public string tempMessage;
     public int tempChatID;
 
+    bool isChatActive;
+
     private void Awake()
     {
         if (instance == null) { instance = this; }
@@ -65,7 +69,16 @@ public class ModularChatManager : NetworkBehaviour
         //roep het voorbeeld command
         //RunCommand("/kick kyan");
 
-        RunCommand("/tp kyan tom");
+        if (currentLobby.HasValue)
+        {
+            CreateGlobalChat(NetworkManager.ConnectedClientsIds.ToList());
+        }
+        if (useSteamUsername)
+        {
+            username = SteamClient.Name;
+        }
+
+        ToggleChat(false);
     }
 
     public void TP_command(ChatCommand command)
@@ -78,17 +91,6 @@ public class ModularChatManager : NetworkBehaviour
         //do whatever you want
 
     }
-
-
-    //voorbeeld command
-    public void kick(ChatCommand command)
-    {
-        ChatCommandVariable player = command.GetVariableByName("player");
-        Debug.Log(player.variableValue + " was kicked!");
-
-        //logica om hun te kicken
-    }
-
 
     public void SetUserNickname(string _n){ username = _n;  }
     public void SetUserNicknameColor(UnityEngine.Color _c){ myUsernameColor = _c;  }
@@ -108,9 +110,39 @@ public class ModularChatManager : NetworkBehaviour
     //personal = name1 -> me : message
     //team = {teamColor} name : message
 
+    
+    public void MessageInput(string message)
+    {
+        SendMessageToChat(message, username, currentChatId);
+    }
+
+
+    void ToggleChat(bool isActive)
+    {
+        isChatActive = isActive;
+        canvas.SetActive(isChatActive);
+
+        if (isChatActive)
+        {
+            chatInput.ActivateInputField();
+        }
+        else
+        {
+            chatInput.DeactivateInputField();
+        }
+    }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            ToggleChat(true);
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ToggleChat(false);
+        }
+
         if (Input.GetKeyDown(KeyCode.G))
         {
             Debug.Log("Trying to create chat");
