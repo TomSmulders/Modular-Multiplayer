@@ -105,9 +105,10 @@ public class ModularChatManager : NetworkBehaviour
 
     public void MessageInput(string message)
     {
+        if(message == string.Empty || message == null || message == "") { return; }
         SendMessageToChat(message, username, currentChatId);
         chatInput.text = "";
-    }
+    } 
 
 
     void ToggleChat(bool isActive)
