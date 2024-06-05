@@ -3239,13 +3239,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useSteamUsername: 1
   username: user
+  currentChatId: 1
   myUsernameColor: {r: 1, g: 1, b: 1, a: 1}
   defaultGlobalChatColor: {r: 1, g: 1, b: 1, a: 1}
   defaultPersonalChatColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   accesIds: c9e141ba00000000f5eef501000000000100000000000000
   multipleChats: 0
-  chatContentBoxes: {fileID: 0}
-  chatInput: {fileID: 0}
+  canvas: {fileID: 308785756}
+  chatInput: {fileID: 1761519961}
   commandPrefix: /
   chats: []
   globalChatCommands:
