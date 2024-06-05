@@ -138,6 +138,10 @@ public class GameNetworkManager : NetworkBehaviour
             _maxPlayers = GlobalGameSettings.instance.maxPartySize;
         }
 
+
+
+
+
         currentLobby = await SteamMatchmaking.CreateLobbyAsync(_maxPlayers);
         currentLobby.Value.SetData("LobbyOwner", currentLobby.Value.Owner.Id.ToString());
 
@@ -169,7 +173,7 @@ public class GameNetworkManager : NetworkBehaviour
 
         Lobby[] lobbies = await SteamMatchmaking.LobbyList.RequestAsync();
 
-        foreach (Lobby _lobby in lobbies)
+        foreach (Lobby _lobby in lobbies) 
         {
             if (_lobby.GetData("LobbyName").Length > 0 && _lobby.GetData("GameName") == GlobalGameSettings.instance.gameName)
             {
