@@ -30,25 +30,7 @@ public class MoveMentNetworkTransform : NetworkBehaviour
 
 
 
-    [ServerRpc(RequireOwnership = true)]
-    void Teleport_serverRpc(Vector3 _teleportCordenets, string name)
-    {
-        if (name == SteamClient.Name)
-        {
-            transform.position = _teleportCordenets;
-            Debug.Log(SteamClient.Name + "teleported to" + _teleportCordenets);
-        }
-    }
-
-    [ClientRpc]
-    void Teleport_ClientRpc(Vector3 _teleportCordenets, string name)
-    {
-        if (name == SteamClient.Name)
-        {
-            transform.position = _teleportCordenets;
-            Debug.Log(SteamClient.Name + "teleported to" + _teleportCordenets);
-        }
-    }
+   
 
 
 
