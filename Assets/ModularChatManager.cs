@@ -106,13 +106,14 @@ public class ModularChatManager : NetworkBehaviour
     public void MessageInput(string message)
     {
         SendMessageToChat(message, username, currentChatId);
+        chatInput.text = "";
     }
 
 
     void ToggleChat(bool isActive)
     {
         isChatActive = isActive;
-        canvas.SetActive(isChatActive);
+        //canvas.SetActive(isChatActive);
 
         if (isChatActive)
         {
