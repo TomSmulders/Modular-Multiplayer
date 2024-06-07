@@ -34,37 +34,39 @@ public class ChatCommants : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = true)]
-    ulong? GetclientIdFromSteamName_serverRpc(Vector3 _teleportCoordinates, string name)
-    {
-        ulong? id = (GetclientIdFromSteamName_ClientRpc(_teleportCoordinates, name);
-        if (id.HasValue)
-        {
-            return id;
-        }
-        else
-        {
-            return null;
-        }
-    }
+    //you rpc need to return void
 
-    [ClientRpc]
-    ulong? GetclientIdFromSteamName_ClientRpc(Vector3 _teleportCoordinates, string name)
-    {
-        if (name == SteamClient.Name)
-        {
-            return NetworkManager.LocalClientId;
-        }
-        return null;
-    }
+    //[ServerRpc(RequireOwnership = true)]
+    //ulong? GetclientIdFromSteamName_serverRpc(Vector3 _teleportCoordinates, string name)
+    //{
+    //    ulong? id = (GetclientIdFromSteamName_ClientRpc(_teleportCoordinates, name);
+    //    if (id.HasValue)
+    //    {
+    //        return id;
+    //    }
+    //    else
+    //    {
+    //        return null;
+    //    }
+    //}
+
+    //[ClientRpc]
+    //ulong? GetclientIdFromSteamName_ClientRpc(Vector3 _teleportCoordinates, string name)
+    //{
+    //    if (name == SteamClient.Name)
+    //    {
+    //        return NetworkManager.LocalClientId;
+    //    }
+    //    return null;
+    //}
 
 
     public void GetClientIdfromName(string name)
     {
-        foreach (var client in )
-        {
-            if()
-        }
+        //foreach (var client in )
+        //{
+        //    if(
+        //}
     }
 
 
