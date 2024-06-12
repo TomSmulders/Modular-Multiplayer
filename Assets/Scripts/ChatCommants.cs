@@ -7,15 +7,47 @@ using UnityEngine;
 
 public class ChatCommants : NetworkBehaviour
 {
-
-
-    public void Teleport_Command(ChatCommand command)
+    public static Vector3 StringToVector3(string sVector)
     {
-        ChatCommandVariable username = command.GetVariableByName("username");
-        ChatCommandVariable Coordinates = command.GetVariableByName("Coordinates");
-        
-        //vann naam naar id
+        // Remove the parentheses
+        if (sVector.StartsWith("(") && sVector.EndsWith(")"))
+        {
+            sVector = sVector.Substring(1, sVector.Length - 2);
+        }
 
+        // split the items
+        string[] sArray = sVector.Split(',');
+
+        // store as a Vector3
+        Vector3 result = new Vector3(
+            float.Parse(sArray[0]),
+            float.Parse(sArray[1]),
+            float.Parse(sArray[2]));
+
+        return result;
+    }
+
+    public void Teleport_Command(ChatCommand _command)
+    {
+        
+        ChatCommandVariable username = _command.GetVariableByName("username");
+        ChatCommandVariable coordinates = _command.GetVariableByName("Coordinates");
+
+        Vector3 coordinate = StringToVector3(coordinates.ToString());
+
+        if (username == null)
+        {
+            Teleport(coordinate);
+        }
+        else
+        {
+            Teleport_serverRpc(coordinate, username.ToString());
+        }
+    }
+
+    void Teleport(Vector3 _teleportCoordinates)
+    {
+            transform.position = _teleportCoordinates;
     }
 
     [ServerRpc(RequireOwnership = true)]
@@ -33,6 +65,7 @@ public class ChatCommants : NetworkBehaviour
             Debug.Log(SteamClient.Name + "teleported to" + _teleportCoordinates);
         }
     }
+
 
     //[ServerRpc(RequireOwnership = true)]
     //ulong? GetclientIdFromSteamName_serverRpc(Vector3 _teleportCoordinates, string name)

@@ -57,8 +57,7 @@ public class ModularChatManager : NetworkBehaviour
 
     private void Awake()
     {
-        if (instance == null) { instance = this; }
-        else { Destroy(this); }
+        if (instance == null) { instance = this; } else { Destroy(this); }
         if (GlobalGameManager.instance.currentLobby.HasValue)
         {
             currentLobby = GlobalGameManager.instance.currentLobby.Value;
