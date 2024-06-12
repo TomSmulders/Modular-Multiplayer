@@ -3255,7 +3255,7 @@ MonoBehaviour:
   myUsernameColor: {r: 1, g: 1, b: 1, a: 1}
   defaultGlobalChatColor: {r: 1, g: 1, b: 1, a: 1}
   defaultPersonalChatColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  accesIds: c9e141ba00000000f5eef501000000000100000000000000
+  accesIds: c9e141ba00000000f5eef5010000000001000000000000000000000000000000
   multipleChats: 0
   canvas: {fileID: 308785756}
   chatInput: {fileID: 1761519961}
@@ -3263,13 +3263,13 @@ MonoBehaviour:
   chats: []
   globalChatCommands:
   - name: tp
-    requiresAccess: 0
+    requiresAccess: 1
     accessId: 0
     variables:
     - variableName: player1
       variableType: 0
       variableValue: 
-    - variableName: player2
+    - variableName: Coordinates
       variableType: 0
       variableValue: 
     commandEvent:
